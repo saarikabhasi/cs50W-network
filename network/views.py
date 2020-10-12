@@ -11,8 +11,8 @@ from datetime import datetime
 
 def index(request):
     print("Show all posts")
-    all_posts = Post.objects.all()
-    print("All posts",Post)
+    all_posts = Post.objects.all().order_by('-date_and_time')
+    print("All posts",Post,"\n",type(all_posts))
     return render(request,"network/index.html",{
         "allposts":all_posts,
 
@@ -77,39 +77,65 @@ def register(request):
 
 def newpost(request):
     print("new post")
-    if request.method == "GET":
-        print("new post GET")
-        newpost_form= forms.NewPostForm()
 
+    if request.method == "GET":
+
+        newpost_form= forms.NewPostForm()
         return render(request, "network/newpost.html",{
-            # "form":form,
             "newpost_form":newpost_form
 
         })
     else:
-        print("new post POST")
         newpost_form = forms.NewPostForm(request.POST)
-        print("post",request.POST.get)
         username = request.user.username
 
-        date_time = datetime.now()
-        
-        print(date_time,type(date_time))
         if newpost_form.is_valid():
+
             content = newpost_form.cleaned_data["contents"]
+
             if len(content)>0:
-                username = User.objects.get(username =username)
+
+                username = User.objects.get(username = username)
+                date_time = datetime.now()
                 post = Post(contents = content,user_id=username,date_and_time=date_time,num_of_likes=0)
-                print("Got content",content)
                 post.save()
-                return index(request)
+                return HttpResponseRedirect(reverse("index"))
+
             else:
                 return render (request,"network/newpost.html",{
-                    # "form":form,
                     "newpost_form":newpost_form,
                 })
         else:
             return render (request,"network/newpost.html",{
-                    # "form":form,
                     "newpost_form":newpost_form,
             })
+
+def profile(request):
+    print("profile")
+    if request.method == "GET":
+        user = User.objects.get(username = request.user.username)
+        if user:
+            posts = Post.objects.filter(user_id = user).order_by('-date_and_time')
+            following_count = Follow.objects.filter(follower = user).count()
+            follower_count = Follow.objects.filter(following = user).count()
+            users = User.objects.all()
+            
+            return render(request,"network/profile.html",{
+                "username":request.user.username,
+                "posts":posts,
+                "following_count":following_count,
+                "follower_count":follower_count,
+                "users":users,
+            })
+
+
+
+
+
+def following(request):
+    print("following")
+    pass
+
+def editpost(request):
+    print("edit post")
+    pass

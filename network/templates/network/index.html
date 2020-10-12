@@ -6,23 +6,25 @@
 
 {% block body %}
     <h1> All posts</h1>
-    <ul>
+    <form action="{% url 'newpost' %}" method ="POST">
+        {% csrf_token %}    
+        <button type = "submit" name ="newpost" id ="newpost">Whats on your mind?</button>
+    </form> 
+    <div id ="showposts"> 
         {% for post in allposts %}
-        <li>
-            <h2>{{post.user_id}}</h2>
-            <p>{{post.contents}}</p>
-            <p>{{post.date_and_time}}</p>
-            <p>{{post.num_of_likes}}</p>
-        </li>
-        {% empty %}
-        <li>No posts</li>
-        
+            <hr class="hr_divide_heading">  
+            <div id= "post">
+                <h5>{{post.user_id}}</h5>
+                <p>{{post.contents}}</p>
+                <p>{{post.date_and_time}}</p>
+                <p>{{post.num_of_likes}}</p>
+            </div>
+            {% empty %}
+
+            <h5>No posts</h5>
         {% endfor %}
-    </ul>
-        <form action="{% url 'newpost' %}" method ="POST">
-            {% csrf_token %}    
-            <button type = "submit" name ="newpost" id ="newpost">Whats on your mind?</button>
-        </form>
+    </div>
+ 
 
         
         
