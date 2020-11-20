@@ -1,51 +1,8 @@
-{% extends "network/layout.html" %}
+<!-- This page is a default page that shows all the information of OTHER user. 
+if the current user is same as user. (redirect to user_profile)
+if current user is different from user, meaning (current user is checking  profile of someone else)
+display only limited information. 
 
-{% block title %}
-    Posts
-{% endblock %}
-
-{% block body %}
-   
-<div id = "profile">
-    <div id ="profile-nav">
-        <h1>{{username}}</h1>
-        <p><a href ="#"> {{following_count}} Following</a><a href ="#">{{follower_count}}Followers</a> </p>
-        <hr>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" data-toggle="collapse"  role="button" href="#myposts"  aria-expanded="false" aria-controls="myposts">My Posts </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="collapse"  role="button" href="#whotofollow"  aria-expanded="false" aria-controls="whotofollow">Who to Follow?</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Likes</a>
-                </li>
-            </ul>
-        </nav>
-    
-    </div>
-    <div id ="myposts">
-    {% for post in posts %}
-        <hr class="hr_divide_heading">  
-        <div class="collapse" id= "post">
-            
-
-            <p>{{post.contents}}</p>
-            <p>{{post.date_and_time}}</p>
-            <p>{{post.num_of_likes}}</p>
-        </div>
-        {% empty %}
-        <p>No posts</p>
-
-    {% endfor %}
-    </div>
-    <div id="whotofollow">
-       {% for user in users %}
-       
-    </div>
-
-</div>
-  
-{% endblock %}
+Shows: 
+user's posts,
+and likes (post that user has liked) -->

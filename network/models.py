@@ -20,7 +20,7 @@ class Post(models.Model):
 class Follow(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE,related_name="Follower")
     following = models.ManyToManyField(User,blank =True,related_name="Following") 
-
+    #follower follows many users
 
     def get_following(self):
         return "\n".join([p.username for p in User.objects.all()])

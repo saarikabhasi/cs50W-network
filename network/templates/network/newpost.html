@@ -8,7 +8,7 @@
 <h1> Create Post</h1>
 <div >
     <h2> {{user.username}} </h2>
-    <form action="{% url 'newpost'  %}" method="POST"  >
+    <form action="{% url 'network:newpost'  %}" method="POST"  >
         {% csrf_token %}          
         
         {{newpost_form}}

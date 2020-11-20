@@ -1,0 +1,251 @@
+{% extends "network/layout.html" %}
+
+{% block title %}
+    Posts
+{% endblock %}
+
+{% block body %}
+<h6>current user profile</h6>
+<div id = "profile">
+    <div id ="profile-nav">
+        <h1>{{username}}</h1>
+        <p><a href ="#" id = "following_count"> {{following_count}} Following</a><a href ="#" id = "follower_count">{{follower_count}}Followers</a> </p>
+        <hr>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <ul class="navbar-nav">
+                <li class="nav-item ">
+                    <!-- <a class="nav-link" data-toggle="collapse"  role="button" href="#myposts"  aria-expanded="false" aria-controls="myposts">My Posts </a> -->
+                    <button  class ="active" data-section="myposts">my Posts </button>
+                </li>
+                <li class="nav-item">
+                    <!-- <a class="nav-link" data-toggle="collapse"  role="button" href="#whotofollow"  aria-expanded="false" aria-controls="whotofollow">Who to Follow?</a> -->
+                    <button data-section="networks">networks</button>
+                </li>
+                <li class="nav-item">
+                    <!-- <a class="nav-link" href="#">Likes</a> -->
+                    <button data-section="likes">Likes</button>
+                </li>
+            </ul>
+        </nav>
+    
+    </div>
+    <div id ="myposts">
+        <!-- <div id = "posts">
+            <p id = "content"></p>
+            <p id ="date_and_time"></p>
+            <p id = "likes"></p>
+            <hr class="hr_divide_heading">
+        </div> -->
+    </div>
+
+
+    <div id="whotofollow">
+        <!-- <h2>happy networking!</h2> -->
+       {% for user in users %}
+       {%endfor %}
+    </div>
+
+</div>
+<script>
+    username ="{{username}}"
+    //Show given section
+    function showSection(section){
+        
+       // Find section contents from server
+       console.log("JS showsection function")
+    //    console.log("PATH:",`${username}/${section}`)
+       fetch(`${username}/${section}`)
+       //fetch(`/${section}`)
+       
+       .then(response => response.text())   
+       .then(text => {
+        /* 
+        num : 1 display my posts
+            : 2 display networks
+            : 3 display all liked posts 
+        */
+        if (section == "myposts"){
+
+
+            //location.reload(true)
+            // myposts
+            // console.log("text",text);
+            
+            var myposts = JSON.parse(text);
+            var posts= {}
+            // console.log(myposts,"\n",typeof(myposts),"\n len",myposts.length)
+            // for (var i = 0, fields; i < myposts.length; i++) {
+            //     fields = myposts[i]["fields"];
+
+            //     posts[i] = fields 
+            //     posts[i]["id"] = myposts[i]["id"]
+            
+            
+            // }
+
+            // console.log(Object.keys(posts).length)
+
+            for (i = 0 ; i<myposts.length-1;i++){
+                let post = document.createElement('div');
+                post.id = "posts";
+
+                let contents = document.createElement('p');
+                contents.innerHTML = myposts[i]["contents"];
+
+                let date_and_time = document.createElement('p');
+                date_and_time.innerHTML = new Date(myposts[i]["date_and_time"]);   
+
+                let num_of_likes = document.createElement('p');
+                num_of_likes.innerHTML = myposts[i]["num_of_likes"];
+
+                hr = document.createElement('hr');
+                hr.className = 'hr_divide_heading';
+
+                post.appendChild(contents);        
+                post.appendChild(date_and_time);   
+                post.appendChild(num_of_likes); 
+                post.appendChild(hr);
+                
+                document.getElementById("myposts").append(post);    
+
+                // document.querySelector("#content").innerHTML =   myposts[i]["contents"];
+                // document.querySelector("#date_and_time").innerHTML =   new Date(myposts[i]["date_and_time"]);   
+                // document.querySelector("#likes").innerHTML =   myposts[i]["num_of_likes"];
+                // document.querySelector("#post").innerHTML =   myposts[i]["contents"];+ new Date(myposts[i]["date_and_time"]);   + myposts[i]["num_of_likes"];
+
+
+                
+            }
+
+
+            // console.log(myposts[myposts.length-1]["following_count"],myposts[myposts.length-1]["follower_count"] )
+            document.querySelector("#following_count").innerHTML = `${myposts[myposts.length-1]["following_count"]} Following`
+            document.querySelector("#follower_count").innerHTML = `${myposts[myposts.length-1]["follower_count"]} Follower`    
+        }
+        
+        
+        //     for ( i =0; i < Object.keys(posts).length; i++) {
+        //         // create div for each posts
+        //         let post = document.createElement('div');
+        //         post.id = "posts";
+
+        //         let contents = document.createElement('p');
+        //         contents.innerHTML = posts[i]["contents"];
+
+        //         let date_and_time = document.createElement('p');
+        //         date_and_time.innerHTML = new Date(posts[i]["date_and_time"]);
+                
+        //         let num_of_likes = document.createElement('p');
+        //         num_of_likes.innerHTML = posts[i]["num_of_likes"];
+
+        //         hr = document.createElement('hr');
+        //         hr.className = 'hr_divide_heading';
+
+        //         post.appendChild(contents);        
+        //         post.appendChild(date_and_time);   
+        //         post.appendChild(num_of_likes); 
+        //         post.appendChild(hr);
+            
+        //         document.getElementById("myposts").append(post);
+                
+
+        //     }
+        // }
+        //work more on network button
+        else if (section == "networks"){
+            //networks
+            var networks = JSON.parse(text);
+            var users = {}
+            console.log(networks.length);
+            for (i = 0,fields; i<networks.length; i++){
+                fields = networks[i]["fields"];
+                users[i] = fields
+                users[i]["pk"] = networks[i]["pk"]
+
+            }
+
+
+            for ( i =0; i < Object.keys(users).length; i++) {
+
+                let whotofollow = document.createElement('div');
+                whotofollow.id = "whotofollow";
+
+                let username = document.createElement('p');
+                username.innerHTML = users[i]["username"];
+
+                hr = document.createElement('hr');
+                hr.className = 'hr_divide_heading';
+
+                whotofollow.appendChild(username);
+
+                whotofollow.appendChild(hr);
+
+                document.getElementById("myposts").append(whotofollow);
+
+
+                }
+  
+        }
+        //likes
+        else if (section == "likes"){}
+       
+        else{
+           console.log("error");
+        }
+        document.getElementById("#")
+    }
+    );
+    }   
+
+    window.onload = function(){
+
+        // by default show my posts
+        console.log("showing default tab")
+        
+
+        showSection("myposts");
+        
+        
+        // console.log("window.location.hash",window.location.hash)
+        // console.log("window.location ",window.location )
+        // if(!window.location.hash) {
+        // window.location = window.location + '#loaded';
+        // console.log("reload")
+        // window.location.reload();
+        // }
+    }
+    
+
+    document.addEventListener('DOMContentLoaded',function(){
+
+        
+        // Add section functionality
+        document.querySelectorAll('button').forEach(button =>{
+            button.onclick = function(){
+                const section = this.dataset.section
+                showSection(section);
+                var current = document.getElementsByClassName("active");
+                current[0].className = current[0].className.replace(" active", "");
+                this.className ="active";
+                
+ 
+
+                console.log("window hash",window.location.hash)
+                console.log("window loacation",window.location)
+                if (section != "myposts"){
+                    history.pushState({section: section}, "", `${section}`);
+                }
+                else{
+                    history.pushState({section: section}, "", `{{username}}/`);
+                }
+
+                
+            };
+        
+            
+        });
+    });
+
+</script>
+  
+{% endblock %}
