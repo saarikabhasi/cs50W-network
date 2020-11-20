@@ -1,0 +1,21 @@
+1. profile page:
+user name - display
+# of followers - take to another page, display all the number of followers with links to their profile page (show their posts in reverse order on click)
+# of following - same as above for following users
+my post - show all my posts in reverse order
+networks - show all the users with follow or unfollow button
+likes - show all the post like by current user
+
+2. following button:
+take to a page and show all the users that current user follows
+on each user show their most latest posts alone in their bio. 
+have a hyperlink to take to the user's profile page
+
+number of pages: 
+
+1. index : show all the posts from all the users
+2. user_profile : show current user's profile, posts, networks,likes, and # of followers and following.
+3. profile : (for users who are not logged in ) show all of their posts in reverse order
+4. following: show the page only for logged in users, show limited posts.
+5.
+
