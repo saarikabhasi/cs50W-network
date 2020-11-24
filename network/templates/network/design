@@ -19,3 +19,21 @@ number of pages:
 4. following: show the page only for logged in users, show limited posts.
 5.
 
+
+===== FOLLOW O/p=====
+user follow some:
+    test  can follow [{'id': 2, 'username': 'user_s'}]
+    test  currently follows  [{'id': 4, 'username': 'fida'}]
+    Response: [{"id": 2, "username": "user_s"}, [{"id": 4, "username": "fida"}], {"following_count": 1, "follower_count": 1}]
+
+user follow all :
+    Response: [{"id": 1, "username": "test"}, {"id": 4, "username": "fida"}, 0, {"following_count": 2, "follower_count": 0}]
+
+user follow none:
+    fida can follow [{'id': 1, 'username': 'test'}, {'id': 2, 'username': 'user_s'}, 0]
+    fida  currently follows  0
+    Response: [{"id": 1, "username": "test"}, {"id": 2, "username": "user_s"}, 0, {"following_count": 0, "follower_count": 2}]
+
+expected o/p design:
+
+Response: [{"user currently follow":[{"id": 1, "username": "test"}, {"id": 2, "username": "user_s"}]}, "user_can_follow":0, {"following_count": 0, "follower_count": 2}]

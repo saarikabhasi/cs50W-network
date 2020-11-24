@@ -133,16 +133,68 @@ def section(request,user,category):
     user = User.objects.get(username = request.user.username)
     follow = follow_counts(request,user)
 
+    print("Category is:",category)
+
     if category == "myposts":
-        print("Category is:",category)
+
+        print("in",category,"loop")
+
         myposts = list(get_all_by_posts(request,user))
+
+        result= dict({"myposts":myposts})
+        result.update(follow)
+
+        # print("after append",len(myposts),myposts[len(myposts)-1])
+        # print("myposts",myposts,"\n","type",type(myposts))
+
+        response = json.dumps(result,default=str)
+
+    elif category == "networks":
+        '''
+        We have three options:
+        1. user follows no one. in that case current_following is empty
+        2. user follows some. 
+        3. user follows all. 
+        '''
+        print("in ",category," loop")
+
+        current_following = Follow.objects.filter(follower = user.id)
+
+        if len(current_following) == 0:
+            # user follow none
+
+            print(user, "follow none ")
+            
+            user_can_follow =  list(User.objects.all().exclude(username = user).values('id','username'))
+            user_currently_follows  = 0
+
+        elif len(current_following) == len(User.objects.all().exclude(username = user)):
+            #follow all (except itself)
+
+            print(user, "follow all (except itself) ")
+
+            user_can_follow = 0
+
+            ids = Follow.objects.values_list('following',flat= True).filter(follower = user.id)
+            user_currently_follows = list(User.objects.filter(id__in = set(ids)).values('id','username'))
+
+            
+            
+        else :
+            # user follows some
+            print(user, "follow some ")
+           
+            user_currently_follow_ids = Follow.objects.values_list('following',flat= True).filter(follower = user.id)
+            
+            user_currently_follows = list(User.objects.filter(id__in = set(user_currently_follow_ids)).values('id','username'))
+            user_can_follow = list(User.objects.all().exclude(username = user).exclude(id__in = set(user_currently_follow_ids)).values('id','username'))
+
+        result = dict({"user_currently_follows":user_currently_follows,"user_can_follow":user_can_follow})
+        result.update(follow)
+        response = json.dumps(result,default=str) 
+        print("Response:",response)
         
-        myposts.append(follow)
-        print("after append",len(myposts),myposts[len(myposts)-1])
-        print("myposts",myposts,"\n","type",type(myposts))
-        response = json.dumps(myposts,default=str)
-    elif category == "network":
-        pass
+        
     elif category == "likes":
         pass
     else:

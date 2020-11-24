@@ -22,9 +22,10 @@ class Follow(models.Model):
     following = models.ManyToManyField(User,blank =True,related_name="Following") 
     #follower follows many users
 
-    def get_following(self):
-        return "\n".join([p.username for p in User.objects.all()])
+    # def get_following(self):
+    #     print("follow class GET_FOLLOWING")
+    #     return "\n".join([[p.username, p.id] for p in User.objects.all()])
 
-    def __str__ (self):
-        return f" {self.id}: {self.follower} follows {self.following.all()}"
+    def __str__ (self):  
+        return f" {self.id}: {self.follower} follows {self.following.all().values('id','username')}"
 
