@@ -14,7 +14,13 @@ urlpatterns = [
     #path("profile/<int:num>",views.profile_tab,name="profile_tab"),
     path("<str:user>",views.profile,name="profile"),
 
-    path("<str:user>/<str:category>",views.section,name="section"),
+    path("<str:user>/profile/<str:category>",views.section,name="section"),
+    #path("<int:id>/<str:user>",views.updatefollow,name="updatefollow"),
+    
+    path("<str:user>/connect",views.connect,name="connect"),
+
+    #path("connect",views.connect,name="connect"),
+
     # path("profile",views.profile,name="profile"),
     #path("profile_tab/<int:num>",views.profile_tab,name="profile_tab"),
 ]
