@@ -8,10 +8,7 @@
         <link href="{% static 'network/styles.css' %}" rel="stylesheet">
     </head>
     <body>
-        <script>
-            var csrftoken = '{{csrf_token}}' ;
-            console.log("Template tag",csrftoken)
-        </script>
+        
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">Network</a>
@@ -29,7 +26,7 @@
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Following</a>
+                        <a class="nav-link" href=" {% url 'network:following' user=user.username%}">Following</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'network:logout' %}">Log Out</a>
@@ -47,6 +44,12 @@
           </nav>
         
         <div class="body">
+
+           <script>
+               var csrfToken = "{{csrf_token}}"
+
+           </script> 
+
             {% block body %}
             {% endblock %}
         </div>

@@ -137,8 +137,8 @@ function handleClickEvent(evt) {
                         var crsf = document.createElement("input");
                         crsf.setAttribute("type","hidden");
                         crsf.setAttribute("name","csrfmiddlewaretoken");
-                        crsf.setAttribute("value",'{{ csrf_token }}');
-
+                        crsf.setAttribute("value",csrfToken);
+                        console.log("crsf",csrfToken)
                         // var input = document.createElement("input")
                         // input.setAttribute('type','submit')
                         // input.setAttribute('name',"btn")

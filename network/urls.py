@@ -19,6 +19,7 @@ urlpatterns = [
     
     path("<str:user>/connect",views.connect,name="connect"),
 
+    path("<str:user>/following",views.following,name="following"),
     #path("connect",views.connect,name="connect"),
 
     # path("profile",views.profile,name="profile"),

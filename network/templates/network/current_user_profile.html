@@ -7,15 +7,17 @@
 
 {% block body %}
 
-<script>
-    var csrftoken = '{{ csrf_token }}';
-</script>
-<h6>current user profile</h6>
+
+
 <div id = "profile">
     <div id ="profile-nav">
         <h1>{{username}}</h1>
-        <p><a href ="#" id = "following_count"> {{following_count}} Following</a><a href ="#" id = "follower_count">{{follower_count}}Followers</a> </p>
+        
+        <p><a href ="#" id = "following_count">{{following_count}}  Following </a><a href ="#" id = "follower_count">{{follower_count}} Followers</a></p>
         <hr>
+
+{% if page_info == "current user" %}
+
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <ul class="navbar-nav">
                 <li class="nav-item ">
@@ -44,4 +46,41 @@
 
 </div>
 <script type ="text/javascript" src="{% static 'profile.js' %}"></script>
+
+{% else %}
+
+<section >
+    <article class = "other_profile">
+        <div class ="message">
+
+        </div>
+
+  
+        <div id ="showposts"> 
+            {% for post in posts %}
+                <hr class="hr_divide_heading">  
+                <div id= "post">
+                    <h5>{{post.user_id}}</h5>
+                    <p>{{post.contents}}</p>
+                    <p>{{post.date_and_time}}</p>
+                    <p>{{post.num_of_likes}}</p>
+                </div>
+                {% empty %}
+    
+                <h5>No posts</h5>
+            {% endfor %}
+        </div>
+    </article>
+
+</section>
+<script>
+    var crsf = document.createElement("input");
+    crsf.setAttribute("type","hidden");
+    crsf.setAttribute("name","csrfmiddlewaretoken");
+    crsf.setAttribute("value",csrfToken);
+    console.log("crsf",csrfToken)
+</script>
+{% endif %}
+
+
 {% endblock %}

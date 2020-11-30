@@ -1,0 +1,26 @@
+{% extends "network/layout.html" %}
+
+{% block title %}
+    Posts
+{% endblock %}
+{%load static %}
+
+{% block body %}
+<section>
+    <article class ="result">
+        <div class ="message">
+
+        </div>
+        <div id ="list">
+
+            {% for list in following_list %}
+            <span>
+                <h2>{{list.username}}</h2>
+
+            </span>
+            <hr>
+            {% endfor %}
+        </div>
+    </article>
+</section>
+{% endblock %}

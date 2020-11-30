@@ -5,7 +5,7 @@ from django.core import serializers
 from django.forms.models import model_to_dict
 import json  
 from django.shortcuts import render
-from django.template import loader
+from django.template import loader,Context
 from django.urls import reverse
 from . import forms
 from .models import Post,User,Follow
@@ -17,9 +17,11 @@ def index(request):
     print("INDEX: Show all posts")
 
     all_posts = Post.objects.all().order_by('-date_and_time')
+    print("ALL POSTS",all_posts)
     return render(request,"network/index.html",{
         "allposts":all_posts,
     })
+    
     # return render(request, "network/index.html")
 
 
@@ -120,6 +122,7 @@ def profile(request,user):
 
     print("PROFILE for ",user)
     print("Mrthod",request.method)
+    
     if request.method == "GET":
 
         update_follow_form= forms.updatefollowForm(request.GET)
@@ -127,11 +130,32 @@ def profile(request,user):
     else:
         update_follow_form= forms.updatefollowForm(request.POST)
 
-    return render(request,'network/current_user_profile.html',
-    {
+    if request.user.username == user:
+       return render(request,'network/current_user_profile.html',
+        {
+        "page_info":"current user",
         "username":request.user.username,
         "update_follow_form":update_follow_form,
-    })
+        })
+    else:
+
+        userobj = User.objects.get(username = user)
+        posts = get_all_by_posts(request,userobj)
+        following_count,follower_count = follow_counts(request,userobj)
+        
+        print("posts",posts)
+        return render(request,'network/current_user_profile.html',
+        {
+        "page_info":"other user",
+        "username":user,
+        "posts":posts,
+        "following_count":following_count,
+        "follower_count":follower_count,
+        })
+        
+
+
+    
 
 
 def section(request,user,category):
@@ -269,11 +293,17 @@ def follow_counts(request,user):
     following_count = Follow.objects.filter(follower = user).count()
     follower_count = Follow.objects.filter(following = user).count()
 
-    follow_count = {"following_count":following_count,"follower_count":follower_count}
 
-    print("follow information:",follow_count,"\n",type(follow_count))
+    if request.user.username == user.username:
+        
+        follow_count = {"following_count":following_count,"follower_count":follower_count}
 
-    return follow_count
+        print("follow information:",follow_count,"\n",type(follow_count))
+        print("WEnt inside")
+        return follow_count
+    
+    return follower_count,following_count
+    
 
 # display profile of other user
 def other_user_profile(request,section):
@@ -424,78 +454,35 @@ def get_all_by_posts(request,user):
     print("GET All post",posts,"\n","type of posts",type(posts))
     return posts
 
-# def who_to_follow(request,user):
-#     '''
-#     display a option to “Follow” or “Unfollow” other users
-    
-#     '''
-#     users = User.objects.get(username = user)
-#     print("current user id:",users.id, "user's name:", users.username)
-#     followinglist = Follow.objects.filter(follower = users.id)
 
-#     print("followinglist",followinglist,type(followinglist))
-#     if len(followinglist) == 0:
-#         print("user follows no one",followinglist)
-#         whotofollow = User.objects.all().exclude(username = user)
-#         print("user to be followed",whotofollow)
-#         return whotofollow
-#     elif len(followinglist) == User.objects.exclude(username = user).count():
-#         return followinglist
-#     else:
-#         print("user follows some",followinglist)
-#         id_list =[]
-#         for i in followinglist:
-#             print("parts of list",i)
-#             print("again",i.following.all())
-#             for e in i.following.all():
-#                 id_list.append(e)
-#             #print(User.objects.filter(username=i.following.get(username)))
-#         print(id_list)
-#         whotofollow = User.objects.exclude(username = user).exclude(username__in = id_list)
-#         print("user to be followed",whotofollow)
-#         return whotofollow
-    
-#     return users 
 
-def get_myliked_post(request):
+def get_myliked_post(request,user):
     '''
     show all the posts liked by user
 
     '''
+    #Post.objects.values('contents',contents)
     pass
 
-#profile_tab_function = [get_all_posts(request=None),who_to_follow,get_myliked_post]
-
-# def profile_tab(request,num):
-#     print("profile_tab")
-#     if 1<=num<=3:
-        
-#         # print(profile_tab_function[num-1],type(profile_tab_function[num-1]))
-#         # print(get_all_posts)
-#         user =request.user.username
-#         # print(user)
-#         if num ==1 :
-#             posts = get_all_posts(request)
-#             # print(type(posts),posts)
-#             posts_json = serializers.serialize('json', posts)
-#             # posts=list(posts)
-
-#             return HttpResponse(posts_json,content_type = "dict/json")
-#             #return HttpResponse(qs_json,content_type = "text/json-comment-filtered")
-#             #return HttpResponse (profile_tab_function[num-1])
-#         if num == 2:
-#             whotofollow = who_to_follow(request,user)
-#             whotofollow_json = serializers.serialize('json', whotofollow)
-#             print("whotofollow",whotofollow)
-#             return HttpResponse(whotofollow_json,content_type = "dict/json")
-
-#     else:
-#         raise Http404("No such tab")
 
 
-def following(request):
+
+
+def following(request,user):
     print("following")
-    pass
+    
+    userobj = User.objects.get(username = request.user.username)
+
+   
+
+    ids = Follow.objects.values_list('following',flat= True).filter(follower = userobj.id)
+    following_list = list(User.objects.filter(id__in = set(ids)).values('id','username'))
+
+    return render (request, "network/following.html",{
+        "following_list": following_list},
+
+    )
+  
 
 def editpost(request):
     print("edit post")
