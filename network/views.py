@@ -142,8 +142,8 @@ def profile(request,user):
         userobj = User.objects.get(username = user)
         posts = get_all_by_posts(request,userobj)
         following_count,follower_count = follow_counts(request,userobj)
-        
-        print("posts",posts)
+        connect = follow_check(request,userobj)
+        print("connect?",connect)
         return render(request,'network/current_user_profile.html',
         {
         "page_info":"other user",
@@ -151,10 +151,21 @@ def profile(request,user):
         "posts":posts,
         "following_count":following_count,
         "follower_count":follower_count,
+        "connect":connect,
         })
         
 
 
+def follow_check(request,userobj):
+    if request.user.username == userobj.username:
+        return "ERROR"
+    else:
+        print("id",request.user.id)
+        check = len(Follow.objects.filter(follower = request.user.id).filter(following = userobj.id))
+        print(check)
+        if check > 0:
+            return "unfollow"
+        return "follow"
     
 
 
@@ -454,7 +465,13 @@ def get_all_by_posts(request,user):
     print("GET All post",posts,"\n","type of posts",type(posts))
     return posts
 
-
+def get_all_posts_by_connection(request,userobj):
+    print("get_all_posts_by_connection")
+    if request.user.username == userobj.username:
+        following_ids = Follow.objects.values_list('following',flat= True).filter(follower = request.user.id)
+        posts = Post.objects.filter(user_id__in = set(following_ids)).order_by('-date_and_time')
+        
+        return posts
 
 def get_myliked_post(request,user):
     '''
@@ -468,12 +485,24 @@ def get_myliked_post(request,user):
 
 
 
+def following_posts(request,user):
+    print("following")
+    
+    userobj = User.objects.get(username = request.user.username)
+
+    posts = get_all_posts_by_connection(request,userobj)
+
+    return render (request, "network/following.html",{
+        "posts": posts},
+
+    )
+
 def following(request,user):
     print("following")
     
     userobj = User.objects.get(username = request.user.username)
 
-   
+    #get_all_posts_by_connection(request,userobj)
 
     ids = Follow.objects.values_list('following',flat= True).filter(follower = userobj.id)
     following_list = list(User.objects.filter(id__in = set(ids)).values('id','username'))

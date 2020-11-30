@@ -8,11 +8,11 @@
 {% block body %}
 
 
-
+<script type ="text/javascript" src="{% static 'util.js' %}"></script>
 <div id = "profile">
     <div id ="profile-nav">
         <h1>{{username}}</h1>
-        
+        <div><span id ="connect"></span></div>
         <p><a href ="#" id = "following_count">{{following_count}}  Following </a><a href ="#" id = "follower_count">{{follower_count}} Followers</a></p>
         <hr>
 
@@ -45,6 +45,7 @@
 
 
 </div>
+
 <script type ="text/javascript" src="{% static 'profile.js' %}"></script>
 
 {% else %}
@@ -74,11 +75,21 @@
 
 </section>
 <script>
-    var crsf = document.createElement("input");
-    crsf.setAttribute("type","hidden");
-    crsf.setAttribute("name","csrfmiddlewaretoken");
-    crsf.setAttribute("value",csrfToken);
-    console.log("crsf",csrfToken)
+    connect =  "{{connect}}"
+
+    var form = createForm("post",document.location+"/connect");
+    var crsf = formCrsf();
+
+    if (connect == "unfollow"){
+        var togglebutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value ="follow" /> <input type= "submit"  name = "btn"  value =  unfollow />')
+        }
+        else{
+        var togglebutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value ="unfollow" /> <input type= "submit"  name = "btn"  value =  follow />')
+        }
+    appendChild(parent =form,crsf,togglebutton);
+    document.querySelector("#connect").appendChild(form)
+    
+  
 </script>
 {% endif %}
 

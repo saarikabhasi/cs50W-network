@@ -11,7 +11,7 @@
         <div class ="message">
 
         </div>
-        <div id ="list">
+        <!-- <div id ="showposts">
 
             {% for list in following_list %}
             <span>
@@ -19,6 +19,20 @@
 
             </span>
             <hr>
+            {% endfor %}
+        </div> -->
+        <div id ="showposts"> 
+            {% for post in posts %}
+                <hr class="hr_divide_heading">  
+                <div id= "post">
+                    <h5>{{post.user_id}}</h5>
+                    <p>{{post.contents}}</p>
+                    <p>{{post.date_and_time}}</p>
+                    <p>{{post.num_of_likes}}</p>
+                </div>
+                {% empty %}
+    
+                <h5>No posts</h5>
             {% endfor %}
         </div>
     </article>
