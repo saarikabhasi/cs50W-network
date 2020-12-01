@@ -45,3 +45,4 @@ class FollowAdmin(admin.ModelAdmin):
 admin.site.register(User)
 admin.site.register(Post)
 admin.site.register(Follow,FollowAdmin)
+admin.site.register(Like)

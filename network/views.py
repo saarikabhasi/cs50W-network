@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.template import loader,Context
 from django.urls import reverse
 from . import forms
-from .models import Post,User,Follow
+from .models import *
 from datetime import datetime
 
 
@@ -241,7 +241,11 @@ def section(request,user,category):
             
             
         elif category == "likes":
-            pass
+            post_liked = list(get_myliked_post(request,user))
+            result = dict({"post_liked": post_liked})
+            result.update(follow)
+            response = json.dumps(result,default=str) 
+            print("Response:",response)
         else:
             raise Http404("No such section")  
 
@@ -478,8 +482,13 @@ def get_myliked_post(request,user):
     show all the posts liked by user
 
     '''
-    #Post.objects.values('contents',contents)
-    pass
+    likeobj = Like.objects.values_list('post',flat=True).filter(user = user)
+    print("like obj",likeobj)
+    postObj = Post.objects.filter(id__in = set(likeobj)).values()
+    return postObj
+
+    
+   
 
 
 

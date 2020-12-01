@@ -41,8 +41,9 @@ function handleClickEvent(evt) {
 
         var result = JSON.parse(text);
         display = createElement('div',null,null,null);
-        keys = ["myposts"]
+        
         if (section == "myposts"){
+            const keys = ["myposts"]
             keys.forEach(key=>{
 
                 myposts = result[key]
@@ -115,7 +116,26 @@ function handleClickEvent(evt) {
   
         }
         //likes
-        else if (section == "likes"){}
+        else if (section == "likes"){
+            const keys = ["post_liked"]
+            keys.forEach(key =>{
+                posts = result[key]
+
+                for (i in posts){
+         
+                    let post = createElement('div',null,'posts',null);
+                    let contents = createElement('p',null,null,String(myposts[i]["contents"]));
+                    let date_and_time = createElement('p',null,null,String(new Date(myposts[i]["date_and_time"])));     
+                    let num_of_likes = createElement('p',null,null,String(myposts[i]["num_of_likes"]));
+                    hr = createElement('hr','hr_divide_heading',null,null);
+                    
+                    appendChild(parent = post,contents,date_and_time,num_of_likes,hr);
+                    appendChild(parent =display,post);
+
+                }
+            })
+            
+        }
        
         else{
            console.log("error");
