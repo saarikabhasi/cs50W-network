@@ -31,6 +31,13 @@ body {
 #myposts{
     /* display: none; */
 }
+.fa-heart{
+    color:rgb(214, 214, 214);
+    border-color:black;
+}
+.fa-heart:hover{
+    color:yellow;
+}
 /* #showposts {
     text-align: left;
     display: grid;

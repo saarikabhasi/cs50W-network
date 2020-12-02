@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+
     <h1> All posts</h1>
     <form action="{% url 'network:newpost' %}" method ="POST">
         {% csrf_token %}    
@@ -17,16 +18,97 @@
                 <h5>{{post.user_id}}</h5>
                 <p>{{post.contents}}</p>
                 <p>{{post.date_and_time}}</p>
-                <p>{{post.num_of_likes}}</p>
-                <i class="fa fa-heart-o"></i>
-                <i class="fa fa-heart"></i>
+                {% if post.num_of_likes > 0 %}
+                    <p>{{post.num_of_likes}}</p>
+                <!-- <a id ="like" href ="javascript:updatelike(this,'{{user.username}}','{{post.id}}')"><i class="fa fa-heart-o"></i></a> -->
+
+                    <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:red"></i></a>
+                <!-- <button id ="like" ><i class="fa fa-heart-o"></i></button> -->
+                <!-- <i class="fa fa-heart"></i> -->
             </div>
             {% empty %}
 
             <h5>No posts</h5>
         {% endfor %}
     </div>
+    <script>
+        //     function updatelike(_this,username,post_id){
+        //         //console.log("update like",username,post_id)
+        //     //fetch(`${username}/profile/${section}`)
+            
+        //         // console.log("this",_this)
+        //         // console.log("this",_this.style)
+        //         //console.log("text",text)
+        //         document.querySelectorAll("#like").forEach(function(e) {
+        //             e.addEventListener('click', function() {
+        
+        //                 fetch(`like/${username}/${post_id}`)
+        //     .then(response => response.text())   
+        //     .then(text => {
+        //                 console.log("click",text)
+        //                 if (text === "add"){
+        //                     console.log("inside color change")
+        //                     this.style.color = "red";
+        //         }
+            
+        //   })
+        // });
+        
+        //         // if (text == "add"){
+        //         //     _this.style.backgroundColor = "red";
+        //         // }
+        //         //fetch("")
+        //     })
+            
+            
+        
+           
+        // }
+        
+        // function updatelike(_this,post_id){
+            function updatelike(ele){
+                console.log("js :updatelike")
+                console.log(ele,ele.dataset.section)
 
+                post_id = parseInt(ele.dataset.section)
+                console.log(post_id)
+                fetch(`like/${post_id}`)
+                .then(response => response.text())
+                .then(text => {
+                    console.log("click",text)
+                    element = ele.querySelector(".fa-heart")
+                    if (text === "add"){
+                        
+                        console.log("change to red") 
+                        element.style.color = "red";
+                    }
+                    if (text === "remove"){
+                        console.log("change to green")
+                        element.style.color = "rgb(214, 214, 214);";
+                    }
+
+                })
+            
+
+           
+        }
+
+        
+    
+        document.querySelectorAll("#like").forEach( e=> {
+            // e.addEventListener('click', function(e) {
+    
+                e.onclick = function(){
+                    
+                    //updatelike(this,this.dataset.section)
+                    updatelike(this)
+                }
+                
+            });
+    
+        //});
+    
+        </script>
  
 
         
