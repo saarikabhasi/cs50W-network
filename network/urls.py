@@ -6,23 +6,17 @@ app_name = 'network'
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("like/<int:post_id>", views.update_like, name="update_like"),
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
+    path("profile/<str:user>",views.profile,name="profile"),
+    path("profile/<str:user>/<str:category>",views.section,name="section"),
     path("newpost", views.newpost, name="newpost"),
-
-    #path("profile/<int:num>",views.profile_tab,name="profile_tab"),
-    path("<str:user>",views.profile,name="profile"),
-
-    path("<str:user>/profile/<str:category>",views.section,name="section"),
-    #path("<int:id>/<str:user>",views.updatefollow,name="updatefollow"),
-    
+    path("editpost",views.edit_post,name="editpost"),
+    path("save",views.save_post,name="save_post"),
+    path("like/<int:post_id>", views.update_like, name="update_like"),
     path("connect",views.connect,name="connect"),
-
     path("following",views.following_posts,name="following_posts"),
-    #path("connect",views.connect,name="connect"),
+    
 
-    # path("profile",views.profile,name="profile"),
-    #path("profile_tab/<int:num>",views.profile_tab,name="profile_tab"),
 ]

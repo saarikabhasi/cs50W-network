@@ -2,7 +2,7 @@
     username ="{{username}}"
 
     function toggle(id,toggleTo){
-        console.log("func toggle",id,this.username,toggleTo)
+        
         
         fetch(`${username}/profileupdate/${id}`)
 
@@ -14,6 +14,8 @@
     document.querySelectorAll(".switch").forEach(function(theSwitch) {
     theSwitch.addEventListener("click", handleClickEvent, false);
     });
+
+
 
 function handleClickEvent(evt) {
   let el = evt.target;
@@ -29,8 +31,9 @@ function handleClickEvent(evt) {
     function showSection(section){
         
        // Find section contents from server
-       fetch(`${username}/profile/${section}`)
-
+       //fetch(`${username}/profile/${section}`)
+       //fetch(`section/${section}`)
+       fetch(`${section}`)
        .then(response => response.text())   
        .then(text => {
         /* 
@@ -54,9 +57,18 @@ function handleClickEvent(evt) {
                     let contents = createElement('p',null,null,String(myposts[i]["contents"]));
                     let date_and_time = createElement('p',null,null,String(new Date(myposts[i]["date_and_time"])));     
                     let num_of_likes = createElement('p',null,null,String(myposts[i]["num_of_likes"]));
+                    
+                    loc  = "/network/editpost"
+                    //loc  = "{% url network:editpost %}"
+                    let edit_post_form = createForm("post",loc)
+                    var crsf = formCrsf();
+                    var submitEditbtn = createButton("submit","edit",null,"edit",myposts[i]['id'],"edit")
+                    
+                    appendChild(parent =edit_post_form,crsf,submitEditbtn);
+
                     hr = createElement('hr','hr_divide_heading',null,null);
                     
-                    appendChild(parent = post,contents,date_and_time,num_of_likes,hr);
+                    appendChild(parent = post,contents,date_and_time,num_of_likes,edit_post_form,hr);
                     appendChild(parent =display,post);
 
                 }
@@ -66,7 +78,7 @@ function handleClickEvent(evt) {
         
         
         //work more on network button
-        else if (section == "networks"){
+        if (section == "networks"){
             //networks
 
             const keys = ["user_currently_follows","user_can_follow"]
@@ -81,9 +93,12 @@ function handleClickEvent(evt) {
                         
                         inc = networks[i]["id"]
  
-                      
-                      //form
-                        var form = createForm("post",document.location+"/connect")
+                       
+
+                        let loc = "/network/connect"
+                        
+                        // var form = createForm("post",document.location+"/connect")
+                        var form = createForm("post",loc)
                         var crsf = formCrsf();
  
                         if (key === "user_currently_follows"){
@@ -100,8 +115,10 @@ function handleClickEvent(evt) {
                         let hr = createElement('hr','hr_divide_heading',null,null,null)
 
                         appendChild(parent =whotofollow,username,form,hr);
+                        
+                        
                         appendChild(parent =display,whotofollow);
-                       
+                        //IMPO
                     }
                 }
                 
@@ -116,37 +133,56 @@ function handleClickEvent(evt) {
   
         }
         //likes
-        else if (section == "likes"){
+        if (section == "likes"){
+           
             const keys = ["post_liked"]
+
             keys.forEach(key =>{
                 posts = result[key]
 
                 for (i in posts){
-         
+        
                     let post = createElement('div',null,'posts',null);
-                    let contents = createElement('p',null,null,String(myposts[i]["contents"]));
-                    let date_and_time = createElement('p',null,null,String(new Date(myposts[i]["date_and_time"])));     
-                    let num_of_likes = createElement('p',null,null,String(myposts[i]["num_of_likes"]));
+                    let contents = createElement('p',null,null,String(posts[i]["contents"]));
+                    let date_and_time = createElement('p',null,null,String(new Date(posts[i]["date_and_time"])));     
+                    let num_of_likes = createElement('p',null,null,String(posts[i]["num_of_likes"]));
                     hr = createElement('hr','hr_divide_heading',null,null);
                     
                     appendChild(parent = post,contents,date_and_time,num_of_likes,hr);
                     appendChild(parent =display,post);
 
                 }
+                if (posts.length == 0){
+                    let post = createElement('div',null,'posts',null);
+                    let contents = createElement('p',null,null,"You have not yet liked any posts");
+                    appendChild(parent = post,contents);
+                    appendChild(parent =display,post);
+                }
+
             })
             
         }
        
-        else{
-           console.log("error");
-        }
+
 
   
 
         document.querySelector("#following_count").innerHTML = `${result["following_count"]} Following`
         document.querySelector("#follower_count").innerHTML = `${result["follower_count"]} Follower`    
         
-        document.querySelector("#result").innerHTML = display.innerHTML;    
+        document.querySelector("#result").innerHTML = display.innerHTML;   
+      
+        document.querySelectorAll('#change').forEach(e =>{
+            
+            e.onclick = function(){
+                const value = e.value
+                connect(value);
+                
+            };
+        
+            
+        });
+       
     }
     );
     }   
@@ -154,53 +190,48 @@ function handleClickEvent(evt) {
     window.onload = function(){
 
         // by default show my posts
-        console.log("showing default tab")
+        console.log(
+            "onload,window location",location
+        )
+        username ="test"
         
-
+        window.history.pushState({username:username},"",`${username}`);
+        console.log(window.history)
+        
+        console.log(
+            "onload,window location",location
+        )
+        let section = "myposts"
+        window.history.pushState({username:username,section:section},"",`${username}/${section}`);
         showSection("myposts");
         
-        //console
-        // console.log("window.location.hash",window.location.hash)
-        // console.log("window.location ",window.location )
-        // if(!window.location.hash) {
-        // window.location = window.location + '#loaded';
-        // console.log("reload")
-        // window.location.reload();
-        // }
+
     }
     
-
+    url = window.location.href
     document.addEventListener('DOMContentLoaded',function(){
 
         
         // Add section functionality
         document.querySelectorAll('button').forEach(button =>{
             button.onclick = function(){
-                const section = this.dataset.section
+                let section = this.dataset.section
+                window.history.pushState({section:section},"",`${section}`);
                 showSection(section);
 
                 var current = document.getElementsByClassName("active");    
-                console.log("current",current)
+                
                 current[0].className = current[0].className.replace("active", "");
                 this.className ="active";
 
                 
  
 
-                console.log("window hash",window.location.hash)
-                console.log("window loacation",window.location)
-                // if (section != "myposts"){
-                //     history.pushState({section: section}, "", `${section}`);
-                // }
-                // else{
-                //     history.pushState({section: section}, "", `{{username}}/`);
-                // }
-
                 
             };
         
             
-        });
-    });
+        });     
 
-  
+
+    });

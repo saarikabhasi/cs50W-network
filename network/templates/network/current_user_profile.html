@@ -65,7 +65,17 @@
                     <p>{{post.contents}}</p>
                     <p>{{post.date_and_time}}</p>
                     <p>{{post.num_of_likes}}</p>
+                    {% if post.num_of_likes > 0 and post_liked_ids|length  and post.id in post_liked_ids %}
+                
+                    <!-- <a id ="like" href ="javascript:updatelike(this,'{{user.username}}','{{post.id}}')"><i class="fa fa-heart-o"></i></a> -->
+
+                        <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:red"></i></a>
+                    <!-- <button id ="like" ><i class="fa fa-heart-o"></i></button> -->
+                    <!-- <i class="fa fa-heart"></i> -->
+                {% else %}
+                        <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:white"></i></a>
                     
+                {% endif %}
                 </div>
                 {% empty %}
     

@@ -12,6 +12,10 @@ class NewPostForm(forms.Form):
     contents =forms.CharField(label="",required= False, widget= forms.Textarea
     (attrs={'placeholder':'Starting writing here...','class':'col-sm','style':'top:1rem,margin:10rem'}))
 
+class EditPostForm(forms.Form):
+    contents =forms.CharField(label="",required= False, widget= forms.Textarea
+    (attrs={'class':'col-sm','style':'top:1rem,margin:10rem'}))
+
 class updatefollowForm(forms.Form):
     btn = forms.CharField()
     change = forms.IntegerField()

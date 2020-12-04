@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block body %}
+{% load static %}
+<!-- <script type ="text/javascript" src="{% static 'post.js' %}"></script> -->
 
     <h1> All posts</h1>
     <form action="{% url 'network:newpost' %}" method ="POST">
@@ -14,17 +16,30 @@
     <div id ="showposts"> 
         {% for post in allposts %}
             <hr class="hr_divide_heading">  
-            <div id= "post">
+            <div id= "post" class = {{post.id}}>
                 <h5>{{post.user_id}}</h5>
                 <p>{{post.contents}}</p>
                 <p>{{post.date_and_time}}</p>
-                {% if post.num_of_likes > 0 %}
-                    <p>{{post.num_of_likes}}</p>
-                <!-- <a id ="like" href ="javascript:updatelike(this,'{{user.username}}','{{post.id}}')"><i class="fa fa-heart-o"></i></a> -->
+                <p id ='num_likes_{{post.id}}'>{{post.num_of_likes}}</p>
 
-                    <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:red"></i></a>
-                <!-- <button id ="like" ><i class="fa fa-heart-o"></i></button> -->
-                <!-- <i class="fa fa-heart"></i> -->
+                {% if post.num_of_likes > 0 and post_liked_ids|length  and post.id in post_liked_ids %}
+                
+                    <!-- <a id ="like" href ="javascript:updatelike(this,'{{user.username}}','{{post.id}}')"><i class="fa fa-heart-o"></i></a>  -->
+                    
+                    <!-- <a id ="like" href ="#like" onclick ="updatelike(this);" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:red"></i></a> -->
+
+
+                        <!-- <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:red"></i></a> -->
+                        <button id ="like" style = "width: 80px;" value ="{{post.id}}" ><i class="fa fa-heart" style = "color:red"></i></button>
+
+                {% else %}
+                        <button id ="like" style = "width: 80px;" value ="{{post.id}}" ><i class="fa fa-heart" style = "color:white"></i></button>
+                        <!-- <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:white"></i></a> -->
+                        <!-- <a id ="like" href ="javascript:updatelike(this);" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:white"></i></a> -->
+                        <!-- <a id ="like" href ="{{post.id}}" onclick ="updatelike(this);" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:white"></i></a> -->
+
+                {% endif %}
+                
             </div>
             {% empty %}
 
@@ -66,26 +81,35 @@
         // }
         
         // function updatelike(_this,post_id){
+            
+            // IMPO Working funcs
             function updatelike(ele){
                 console.log("js :updatelike")
-                console.log(ele,ele.dataset.section)
+                // console.log(ele.value)
 
-                post_id = parseInt(ele.dataset.section)
+                post_id = parseInt(ele.value)
                 console.log(post_id)
                 fetch(`like/${post_id}`)
                 .then(response => response.text())
                 .then(text => {
-                    console.log("click",text)
+                    result = JSON.parse(text)
+                    console.log("click",result)
+                    console.log("click type",result["type"])
                     element = ele.querySelector(".fa-heart")
-                    if (text === "add"){
+                    id = `#num_likes_${post_id}`
+                    if (result["type"] === "add"){
                         
                         console.log("change to red") 
                         element.style.color = "red";
+                        
                     }
-                    if (text === "remove"){
-                        console.log("change to green")
-                        element.style.color = "rgb(214, 214, 214);";
+                    if (result["type"] === "remove"){
+                        console.log("change to white")
+                        element.style.color = "white";
+                        
                     }
+                    console.log(result["num_of_likes"])
+                    document.querySelector(id).innerHTML=result["num_of_likes"]
 
                 })
             
@@ -94,7 +118,7 @@
         }
 
         
-    
+    //IMPO Working funcs
         document.querySelectorAll("#like").forEach( e=> {
             // e.addEventListener('click', function(e) {
     
@@ -106,10 +130,10 @@
                 
             });
     
-        //});
+        // });
     
         </script>
- 
+   
 
         
         

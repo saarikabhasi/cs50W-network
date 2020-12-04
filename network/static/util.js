@@ -4,7 +4,7 @@ function formCrsf(){
     crsf.setAttribute("type","hidden");
     crsf.setAttribute("name","csrfmiddlewaretoken");
     crsf.setAttribute("value",csrfToken);
-    console.log("crsf",csrfToken);
+    
 
     return crsf
 }
@@ -26,6 +26,18 @@ function createForm(method,action){
     element = document.createElement("form");
     element.setAttribute('method',method);
     element.setAttribute('action',action);
+
+    return element
+}
+
+function createButton(type,idName,className,name,value,content){
+    element = document.createElement("button")
+    if (type){element.type = type;}
+    if (className){element.className = className;}
+    if (idName){element.id = idName;}
+    if (name){element.name = name;}
+    if (value){element.value = value;}
+    if (content){element.innerHTML = content;}
 
     return element
 }
