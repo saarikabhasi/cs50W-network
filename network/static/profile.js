@@ -31,13 +31,12 @@ function handleClickEvent(evt) {
     function showSection(section){
         
        // Find section contents from server
-       //fetch(`${username}/profile/${section}`)
-       //fetch(`section/${section}`)
+
        fetch(`${section}`)
        .then(response => response.text())   
        .then(text => {
         /* 
-        num : 1 display my posts
+        section : 1 display my posts
             : 2 display networks
             : 3 display all liked posts 
         */
@@ -58,17 +57,11 @@ function handleClickEvent(evt) {
                     let date_and_time = createElement('p',null,null,String(new Date(myposts[i]["date_and_time"])));     
                     let num_of_likes = createElement('p',null,null,String(myposts[i]["num_of_likes"]));
                     
-                    loc  = "/network/editpost"
-                    //loc  = "{% url network:editpost %}"
-                    let edit_post_form = createForm("post",loc)
-                    var crsf = formCrsf();
-                    var submitEditbtn = createButton("submit","edit",null,"edit",myposts[i]['id'],"edit")
-                    
-                    appendChild(parent =edit_post_form,crsf,submitEditbtn);
+
 
                     hr = createElement('hr','hr_divide_heading',null,null);
                     
-                    appendChild(parent = post,contents,date_and_time,num_of_likes,edit_post_form,hr);
+                    appendChild(parent = post,contents,date_and_time,num_of_likes,hr);
                     appendChild(parent =display,post);
 
                 }

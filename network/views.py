@@ -12,19 +12,24 @@ from .models import *
 from datetime import datetime
 from django.db.models import F
 from . import util
+import time
+from django.utils import timezone
 
+import inspect; 
 
-
-def index(request):
+def index(request,edit_post_form = ""):
     print("INDEX: Show all posts")
+    print("index",datetime.now())
     if request.user.is_authenticated:
 
         all_posts = Post.objects.all().order_by('-date_and_time')
+        
         post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
-
+  
         return render(request,"network/index.html",{
             "allposts":all_posts,
             "post_liked_ids":post_liked_ids,
+            "edit_post_form":edit_post_form,
         })
     else:
         return HttpResponseRedirect(reverse("network:login"))
@@ -448,57 +453,53 @@ def following_posts(request):
 
         return HttpResponseRedirect(reverse("network:login"))
 
-def edit_post(request):
+def edit_post(request,post_id):
     print("edit post")
-    if request.user.is_authenticated:
-        post_id = request.POST.get("edit")
-
-        content = util.queryset_post_content(post_id)
-        if content:
-            content = content[0]    
-        edit_post_form = forms.EditPostForm(initial={'contents': content})
-        if edit_post_form.is_valid():
-
-            return render (request, "network/edit_post.html",{
-                "edit_post_form":edit_post_form,
-                "postId":post_id,
+    print(request.method)
     
-                })
-        else:
-            return render (request, "network/edit_post.html",{
 
-                "edit_post_form":edit_post_form, 
-                "postId":post_id,    
+    if request.user.is_authenticated:
+        content = util.queryset_post_content(post_id)
+        
+        if content:
+            content = str(content[0])
+        print("content")
+        response = {"contents":content}
+        response = json.dumps(response,default=str)
+        
+        print("response",response)
 
-            })
-                
+        return HttpResponse(response,content_type = "application/json")
+       
     else:
 
         return HttpResponseRedirect(reverse("network:login"))
 
-def save_post(request):
-    edit_post_form = forms.EditPostForm(request.POST)
-    
-    if edit_post_form.is_valid():
-
-        contents = edit_post_form.cleaned_data["contents"]
-        post_id = request.POST.get("edit")
+def save_post(request,post_id,content):
+    print("save post")
+    print(request.method)
+    print("args",post_id,content)
+    # print("1",inspect.stack()[1].function)
+    # print("2",inspect.stack()[2].function)
+    #if request.user.is_authenticated:
         
-        val = util.save_post(request.user.username,post_id,contents)
-        if val:
-            return HttpResponseRedirect(reverse('network:profile',kwargs={'user':request.user.username}))
-        else:
+        
+        #update_post = util.update_post(request.user.username,post_id,content)
+    print("LOG 0")
+    date_time =timezone.now()
+    print("LOG 1")
+    postobj = Post.objects.filter(id = post_id)
+    print("LOG 2")
+    postobj.update(contents = content, date_and_time =date_time)
+    print("LOG 3")
+    postobj = Post.objects.all().filter(id = post_id).values()
 
-            return render (request, "network/edit_post.html",{
+    result = {"result":list(postobj)}
+    response = json.dumps(result,default=str)
+    print("LOG 4",datetime.now())
+    return HttpResponse(response,content_type = "application/json")
+    print("LOG 5")
+    # else:
 
-                    "edit_post_form":edit_post_form, 
-                    "postId":post_id,    
+    #     return HttpResponseRedirect(reverse("network:login"))
 
-                })
-
-    else:
-        return render (request, "encyclopedia/edit_page.html",{
-                "form":form,
-                "edit_form":edit_form
-            
-        })

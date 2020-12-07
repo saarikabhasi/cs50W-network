@@ -21,11 +21,14 @@ function createElement(tag,className,idName,content){
 
 }
 
-function createForm(method,action){
+function createForm(method,action,onsubmit,id){
 
     element = document.createElement("form");
-    element.setAttribute('method',method);
-    element.setAttribute('action',action);
+    if (method){element.setAttribute('method',method);}
+    if (action){element.setAttribute('action',action);}
+    if (onsubmit){element.setAttribute('onsubmit',onsubmit);}
+    if (id) {element.setAttribute('id',id)}
+    console.log(element,onsubmit)
 
     return element
 }
@@ -39,6 +42,18 @@ function createButton(type,idName,className,name,value,content){
     if (value){element.value = value;}
     if (content){element.innerHTML = content;}
 
+    return element
+}
+
+function createTextarea(rows,cols,id,name,content,form){
+    element = document.createElement("textarea")
+    if (rows){element.rows = rows;}
+    if (cols){element.cols = cols;}
+    if (id){element.id = id;}
+    if (name){element.name = name;}
+    if (form){element.form = form;}
+    if (content){element.innerHTML = content;}
+    if (form){element.form = form;}
     return element
 }
 function appendChild(parent,...args){

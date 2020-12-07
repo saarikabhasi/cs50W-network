@@ -3,10 +3,10 @@
 {% block title %}
     Posts
 {% endblock %}
-
-{% block body %}
 {% load static %}
-<!-- <script type ="text/javascript" src="{% static 'post.js' %}"></script> -->
+{% block body %}
+
+<script type ="text/javascript" src="{% static 'util.js' %}"></script>
 
     <h1> All posts</h1>
     <form action="{% url 'network:newpost' %}" method ="POST">
@@ -16,29 +16,39 @@
     <div id ="showposts"> 
         {% for post in allposts %}
             <hr class="hr_divide_heading">  
-            <div id= "post" class = {{post.id}}>
-                <h5>{{post.user_id}}</h5>
-                <p>{{post.contents}}</p>
-                <p>{{post.date_and_time}}</p>
+
+            <div id = eachpost_{{post.id}}>
+
+                <h5 id ="post_userid">{{post.user_id}}</h5>
+                <p id ="post_content">{{post.contents}}</p>
+                <p d ="post_dateandtime">{{post.date_and_time}}</p>
                 <p id ='num_likes_{{post.id}}'>{{post.num_of_likes}}</p>
+
 
                 {% if post.num_of_likes > 0 and post_liked_ids|length  and post.id in post_liked_ids %}
                 
-                    <!-- <a id ="like" href ="javascript:updatelike(this,'{{user.username}}','{{post.id}}')"><i class="fa fa-heart-o"></i></a>  -->
-                    
-                    <!-- <a id ="like" href ="#like" onclick ="updatelike(this);" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:red"></i></a> -->
-
-
-                        <!-- <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:red"></i></a> -->
-                        <button id ="like" style = "width: 80px;" value ="{{post.id}}" ><i class="fa fa-heart" style = "color:red"></i></button>
+                    <button id ="like" style = "width: 80px;" value ="{{post.id}}" ><i class="fa fa-heart" style = "color:red"></i></button>
 
                 {% else %}
-                        <button id ="like" style = "width: 80px;" value ="{{post.id}}" ><i class="fa fa-heart" style = "color:white"></i></button>
-                        <!-- <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:white"></i></a> -->
-                        <!-- <a id ="like" href ="javascript:updatelike(this);" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:white"></i></a> -->
-                        <!-- <a id ="like" href ="{{post.id}}" onclick ="updatelike(this);" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:white"></i></a> -->
+                    <button id ="like" style = "width: 80px;" value ="{{post.id}}" ><i class="fa fa-heart" style = "color:white"></i></button>
 
                 {% endif %}
+                {% with post_username=post.user_id %}
+                
+                
+                {% ifequal post_username|lower user.username|lower %}
+                    
+                <!-- <div id ="editpost_{{post.id}}"> -->
+                  
+                <button id = "edit" name ="edit"type="submit" value= {{post.id}} onclick = "edit_post('{{ post.id }}')">edit</button>
+                    
+                <!-- </div> -->
+                <div id = "editpost">
+
+                </div>
+                
+                {%endifequal%}
+                {%endwith%}
                 
             </div>
             {% empty %}
@@ -46,96 +56,156 @@
             <h5>No posts</h5>
         {% endfor %}
     </div>
+    
+
     <script>
-        //     function updatelike(_this,username,post_id){
-        //         //console.log("update like",username,post_id)
-        //     //fetch(`${username}/profile/${section}`)
-            
-        //         // console.log("this",_this)
-        //         // console.log("this",_this.style)
-        //         //console.log("text",text)
-        //         document.querySelectorAll("#like").forEach(function(e) {
-        //             e.addEventListener('click', function() {
-        
-        //                 fetch(`like/${username}/${post_id}`)
-        //     .then(response => response.text())   
-        //     .then(text => {
-        //                 console.log("click",text)
-        //                 if (text === "add"){
-        //                     console.log("inside color change")
-        //                     this.style.color = "red";
-        //         }
-            
-        //   })
-        // });
-        
-        //         // if (text == "add"){
-        //         //     _this.style.backgroundColor = "red";
-        //         // }
-        //         //fetch("")
-        //     })
-            
-            
-        
-           
-        // }
-        
-        // function updatelike(_this,post_id){
-            
-            // IMPO Working funcs
-            function updatelike(ele){
-                console.log("js :updatelike")
-                // console.log(ele.value)
 
-                post_id = parseInt(ele.value)
-                console.log(post_id)
-                fetch(`like/${post_id}`)
-                .then(response => response.text())
-                .then(text => {
-                    result = JSON.parse(text)
-                    console.log("click",result)
-                    console.log("click type",result["type"])
-                    element = ele.querySelector(".fa-heart")
-                    id = `#num_likes_${post_id}`
-                    if (result["type"] === "add"){
-                        
-                        console.log("change to red") 
-                        element.style.color = "red";
-                        
-                    }
-                    if (result["type"] === "remove"){
-                        console.log("change to white")
-                        element.style.color = "white";
-                        
-                    }
-                    console.log(result["num_of_likes"])
-                    document.querySelector(id).innerHTML=result["num_of_likes"]
+        function edit_post(postId){
+            console.log("edit post")
+            console.log(postId)
+            console.log(`editpost/${postId}`)
 
-                })
-            
 
-           
-        }
 
-        
-    //IMPO Working funcs
-        document.querySelectorAll("#like").forEach( e=> {
-            // e.addEventListener('click', function(e) {
-    
-                e.onclick = function(){
-                    
-                    //updatelike(this,this.dataset.section)
-                    updatelike(this)
-                }
+            display = createElement('div',null,null,null);
+
+  
+            fetch(`editpost/${postId}`)
+            .then(response =>response.text())
+            .then(text =>{
                 
-            });
-    
-        // });
-    
-        </script>
-   
+                result = JSON.parse(text)
+                content = result["contents"]
+               
+               
+                    
+                //let onSubmit = save_post(postId)
+                
+                form = createForm("POST",null,`save_post("${postId}")`,"editform")
+               
+                var crsf = formCrsf();
 
+                //text area
+                textArea =  createTextarea("10","60",`textarea_${postId}`,"editpost",content,form)
+                
+               // var submitbutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value =' + postId +' /> <input type= "submit"  name = "btn" />')
+                var submitbutton = createElement('span',null,null,'<input type= "submit" id ="savepost" name = "btn" />')
+                
+                appendChild(parent =form,crsf,textArea,submitbutton);
+                appendChild(parent =display,form);
+
+                //document.getElementById("editpost").innerHTML = display.innerHTML
+                document.getElementById(`eachpost_${postId}`).innerHTML = display.innerHTML
+                console.log("new",document.getElementById(`eachpost_${postId}`))
+
+            
+            }
+    
+
+            )
+
+            }
         
+            function save_post(postId){
+                console.log("save post")
+                
+               
+                
+                textarea = document.getElementById(`textarea_${postId}`)
+                content =textarea.value
+
+                parent = document.getElementById("showposts")
+                id = `eachpost_${postId}`
+                // console.log("ID",id)
+                post = document.getElementById(id)
+                // console.log("post", post)
+
+                // post_h5 = document.getElementById(id).getElementsByTagName("*");
+                // console.log("post_h5", post_h5)
+
+                post_div = createElement('div',null,id,null);
+
+                //display = createElement('div',null,null,null);
+                
+                fetch(`savepost/${postId}/${content}`)
+                
+                .then(response =>response.text())
+                
+                .then(text =>{
+                    
+                    result = JSON.parse(text)
+                    console.log("text",result)
+
+                    
+                    const keys = ["result"]
+                    keys.forEach(key=>{
+
+                        changed_post = result[key]
+                        
+                        for (i in changed_post){
+                            
+                           
+                            
+
+                           // let post = createElement('div',null,`eachpost_${postId}`,null);
+                            let user_id = createElement('h5',null,"post_userid",null);
+                           
+                            let contents = createElement('p',null,"post_content",String(changed_post[i]["contents"]));
+                            let date_and_time = createElement('p',null,"post_dateandtime",String(new Date(changed_post[i]["date_and_time"])));     
+                            let num_of_likes = createElement('p',null,`num_likes_${postId}`,String(changed_post[i]["num_of_likes"]));
+                            
+
+
+                            hr = createElement('hr','hr_divide_heading',null,null);
+                            // console.log("post",post)
+                            // console.log("contents",contents)
+                            // console.log("date and time",date_and_time)
+                            // console.log("like",num_of_likes)
+                            appendChild(parent = post,contents,date_and_time,num_of_likes,hr);
+                            appendChild(parent =display,post);
+                            appendChild(parent =post_div,display);
+                            
+                        }
+                        
+                    })
+                    console.log("display",display)
+                    console.log("id", document.getElementById(`eachpost_${postId}`))
+                    
+                    parent.innerHTML  = post_div.innerHTML
+                    console.log("new",parent)     
+                    
+                    })
+                        
+                    }
+
+                                        
+                        // const request = async () =>{
+                            
+                        //     const response = await fetch(`savepost/${postId}/${content}`)
+                    
+                //     const text = await response.text()
+                //     post = document.getElementById(`eachpost_${postId}`)
+                //     for(var i = 0; i < post.length; i++) {
+                //         console.log("I",i)
+                //         }
+                //     }
+                //     request();
+                // }
+             
+            
+           
+        
+            // document.querySelectorAll("#editform").forEach( e=> {
+            // console.log("onsubmit")
+            // e.onSubmit = function(){
+            //     console.log("onclick func")
+            //     save_post(this)
+            // }
+                
+            // });
+
+    </script>
+        <script type ="text/javascript" src="{% static 'post.js' %}"></script>
         
 
   

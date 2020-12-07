@@ -19,4 +19,4 @@ class EditPostForm(forms.Form):
 class updatefollowForm(forms.Form):
     btn = forms.CharField()
     change = forms.IntegerField()
-    pass
+    
