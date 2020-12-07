@@ -40,7 +40,7 @@
                     
                 <!-- <div id ="editpost_{{post.id}}"> -->
                   
-                <button id = "edit" name ="edit"type="submit" value= {{post.id}} onclick = "edit_post('{{ post.id }}')">edit</button>
+                <button id = "edit" name ="edit"type="submit" value= {{post.id}} onclick = "edit_post('{{ post.id }}','{{ post_username }}')">edit</button>
                     
                 <!-- </div> -->
                 <div id = "editpost">
@@ -57,155 +57,9 @@
         {% endfor %}
     </div>
     
+    <script type ="text/javascript" src="{% static 'index.js' %}"></script>
 
-    <script>
-
-        function edit_post(postId){
-            console.log("edit post")
-            console.log(postId)
-            console.log(`editpost/${postId}`)
-
-
-
-            display = createElement('div',null,null,null);
-
-  
-            fetch(`editpost/${postId}`)
-            .then(response =>response.text())
-            .then(text =>{
-                
-                result = JSON.parse(text)
-                content = result["contents"]
-               
-               
-                    
-                //let onSubmit = save_post(postId)
-                
-                form = createForm("POST",null,`save_post("${postId}")`,"editform")
-               
-                var crsf = formCrsf();
-
-                //text area
-                textArea =  createTextarea("10","60",`textarea_${postId}`,"editpost",content,form)
-                
-               // var submitbutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value =' + postId +' /> <input type= "submit"  name = "btn" />')
-                var submitbutton = createElement('span',null,null,'<input type= "submit" id ="savepost" name = "btn" />')
-                
-                appendChild(parent =form,crsf,textArea,submitbutton);
-                appendChild(parent =display,form);
-
-                //document.getElementById("editpost").innerHTML = display.innerHTML
-                document.getElementById(`eachpost_${postId}`).innerHTML = display.innerHTML
-                console.log("new",document.getElementById(`eachpost_${postId}`))
-
-            
-            }
     
-
-            )
-
-            }
-        
-            function save_post(postId){
-                console.log("save post")
-                
-               
-                
-                textarea = document.getElementById(`textarea_${postId}`)
-                content =textarea.value
-
-                parent = document.getElementById("showposts")
-                id = `eachpost_${postId}`
-                // console.log("ID",id)
-                post = document.getElementById(id)
-                // console.log("post", post)
-
-                // post_h5 = document.getElementById(id).getElementsByTagName("*");
-                // console.log("post_h5", post_h5)
-
-                post_div = createElement('div',null,id,null);
-
-                //display = createElement('div',null,null,null);
-                
-                fetch(`savepost/${postId}/${content}`)
-                
-                .then(response =>response.text())
-                
-                .then(text =>{
-                    
-                    result = JSON.parse(text)
-                    console.log("text",result)
-
-                    
-                    const keys = ["result"]
-                    keys.forEach(key=>{
-
-                        changed_post = result[key]
-                        
-                        for (i in changed_post){
-                            
-                           
-                            
-
-                           // let post = createElement('div',null,`eachpost_${postId}`,null);
-                            let user_id = createElement('h5',null,"post_userid",null);
-                           
-                            let contents = createElement('p',null,"post_content",String(changed_post[i]["contents"]));
-                            let date_and_time = createElement('p',null,"post_dateandtime",String(new Date(changed_post[i]["date_and_time"])));     
-                            let num_of_likes = createElement('p',null,`num_likes_${postId}`,String(changed_post[i]["num_of_likes"]));
-                            
-
-
-                            hr = createElement('hr','hr_divide_heading',null,null);
-                            // console.log("post",post)
-                            // console.log("contents",contents)
-                            // console.log("date and time",date_and_time)
-                            // console.log("like",num_of_likes)
-                            appendChild(parent = post,contents,date_and_time,num_of_likes,hr);
-                            appendChild(parent =display,post);
-                            appendChild(parent =post_div,display);
-                            
-                        }
-                        
-                    })
-                    console.log("display",display)
-                    console.log("id", document.getElementById(`eachpost_${postId}`))
-                    
-                    parent.innerHTML  = post_div.innerHTML
-                    console.log("new",parent)     
-                    
-                    })
-                        
-                    }
-
-                                        
-                        // const request = async () =>{
-                            
-                        //     const response = await fetch(`savepost/${postId}/${content}`)
-                    
-                //     const text = await response.text()
-                //     post = document.getElementById(`eachpost_${postId}`)
-                //     for(var i = 0; i < post.length; i++) {
-                //         console.log("I",i)
-                //         }
-                //     }
-                //     request();
-                // }
-             
-            
-           
-        
-            // document.querySelectorAll("#editform").forEach( e=> {
-            // console.log("onsubmit")
-            // e.onSubmit = function(){
-            //     console.log("onclick func")
-            //     save_post(this)
-            // }
-                
-            // });
-
-    </script>
-        <script type ="text/javascript" src="{% static 'post.js' %}"></script>
         
 
   

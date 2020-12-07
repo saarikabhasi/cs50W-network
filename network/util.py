@@ -35,7 +35,7 @@ def update_post(username,post_id,contents):
 
     
 
-    #date_time = datetime.now()
+  
     date_time =timezone.now()
     postobj = Post.objects.filter(id = post_id)
     postobj.update(contents = contents, date_and_time =date_time)

@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect,Http404,JsonResponse
-from django.core import serializers
-from django.forms.models import model_to_dict
+from django.http import HttpResponse, HttpResponseRedirect,Http404
+# from django.core import serializers
+# from django.forms.models import model_to_dict
 import json  
 from django.shortcuts import render
-from django.template import loader,Context
+# from django.template import loader,Context
 from django.urls import reverse
 from . import forms
 from .models import *
@@ -19,11 +19,11 @@ import inspect;
 
 def index(request,edit_post_form = ""):
     print("INDEX: Show all posts")
-    print("index",datetime.now())
+    
     if request.user.is_authenticated:
 
         all_posts = Post.objects.all().order_by('-date_and_time')
-        
+    
         post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
   
         return render(request,"network/index.html",{
@@ -118,7 +118,7 @@ def newpost(request):
                 if len(content)>0:
 
                     username = User.objects.get(username = username)
-                    date_time = datetime.now()
+                    date_time = timezone.now()
                     post = Post(contents = content,user_id=username,date_and_time=date_time,num_of_likes=0)
                     post.save()
                     return HttpResponseRedirect(reverse("network:index"))
@@ -293,8 +293,9 @@ def connect(request):
                 instance = Follow.objects.create(follower = userobj)
                 instance.following.set(userTobe)
       
-      
-        return HttpResponseRedirect(reverse('network:profile',kwargs={'user':request.user.username,'optional_section':"networks"}))
+            
+        return HttpResponseRedirect(reverse('network:profile',kwargs={'user':request.user.username}))
+        #return HttpResponseRedirect(reverse('network:profile',kwargs={'user':request.user.username,'optional_section':"networks"}))
         
     else:
         return HttpResponseRedirect(reverse("network:login")) 
@@ -481,25 +482,22 @@ def save_post(request,post_id,content):
     print("args",post_id,content)
     # print("1",inspect.stack()[1].function)
     # print("2",inspect.stack()[2].function)
-    #if request.user.is_authenticated:
+    if request.user.is_authenticated:
         
         
-        #update_post = util.update_post(request.user.username,post_id,content)
-    print("LOG 0")
-    date_time =timezone.now()
-    print("LOG 1")
-    postobj = Post.objects.filter(id = post_id)
-    print("LOG 2")
-    postobj.update(contents = content, date_and_time =date_time)
-    print("LOG 3")
-    postobj = Post.objects.all().filter(id = post_id).values()
+        update_post = util.update_post(request.user.username,post_id,content)
 
-    result = {"result":list(postobj)}
-    response = json.dumps(result,default=str)
-    print("LOG 4",datetime.now())
-    return HttpResponse(response,content_type = "application/json")
-    print("LOG 5")
-    # else:
+    
 
-    #     return HttpResponseRedirect(reverse("network:login"))
+        # postobj = Post.objects.all().values().filter(id = post_id)
+        postobj = update_post.values()
+
+        result = {"result":list(postobj)}
+        response = json.dumps(result,default=str)
+
+        return HttpResponse(response,content_type = "application/json")
+
+    else:
+
+        return HttpResponseRedirect(reverse("network:login"))
 
