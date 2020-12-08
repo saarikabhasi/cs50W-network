@@ -1,11 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect,Http404
-# from django.core import serializers
-# from django.forms.models import model_to_dict
+
 import json  
 from django.shortcuts import render
-# from django.template import loader,Context
 from django.urls import reverse
 from . import forms
 from .models import *
@@ -14,8 +12,7 @@ from django.db.models import F
 from . import util
 import time
 from django.utils import timezone
-
-import inspect; 
+from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
 
 def index(request,edit_post_form = ""):
     print("INDEX: Show all posts")
@@ -23,19 +20,44 @@ def index(request,edit_post_form = ""):
     if request.user.is_authenticated:
 
         all_posts = Post.objects.all().order_by('-date_and_time')
-    
+        allposts = paginate(request,all_posts)
+
+
+
+       
+
+        
+        
+        # page_obj = paginator.get_page(page_number)
+        # print("page",page_obj)
+
         post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
   
         return render(request,"network/index.html",{
-            "allposts":all_posts,
+            "allposts":allposts,
             "post_liked_ids":post_liked_ids,
             "edit_post_form":edit_post_form,
+            # "page_obj":page_obj,
         })
     else:
         return HttpResponseRedirect(reverse("network:login"))
 
         
     # return render(request, "network/index.html")
+
+def paginate(request,argument):
+    page_number = request.GET.get('page',1)
+    paginator = Paginator(argument, 10) 
+    print("#of pages",paginator.count)
+    try:
+        allposts = paginator.page(page_number)
+    except PageNotAnInteger:
+        allposts = paginator.page(1)
+    except EmptyPage:
+        allposts = paginator.page(paginator.num_pages)
+    
+    return allposts
+        
 
 
 def login_view(request):
@@ -158,7 +180,11 @@ def profile(request,user):
                 
                 userobj = util.get_user_obj(user)
                 posts = get_all_post_by_user(request,user)
+                
+
                 post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
+                
+                
                 following_count,follower_count = follow_counts(request,userobj)
                 connect = follow_check(request,userobj)
                 print("connect?",connect)
@@ -198,7 +224,7 @@ def section(request,user,category):
     if request.user.is_authenticated:
         print("SECTION function")
         print("request method:",request.method)
-
+        print("request",request.path_info)
        
         userobj = util.get_user_obj(request.user.username)
         follow = follow_counts(request,userobj)
@@ -209,8 +235,10 @@ def section(request,user,category):
             if category == "myposts":
 
                 myposts = list(get_all_post_by_user(request))
+               
+                print("myposts",myposts)
                 result= dict({"myposts":myposts})
-
+                
 
             elif category == "networks":
                 '''
@@ -444,7 +472,8 @@ def following_posts(request):
     if request.user.is_authenticated:
 
         userobj = util.get_user_obj(request.user.username)
-        posts = get_all_posts_of_user_network(request,userobj)
+        #posts = get_all_posts_of_user_network(request,userobj)
+        posts = paginate(request,get_all_posts_of_user_network(request,userobj))
 
         return render (request, "network/following.html",{
             "posts": posts},
@@ -485,7 +514,7 @@ def save_post(request,post_id,content):
     if request.user.is_authenticated:
         
         
-        update_post = util.update_post(request.user.username,post_id,content)
+        update_post = util.update_post(post_id,content)
 
     
 

@@ -31,7 +31,9 @@ function handleClickEvent(evt) {
     function showSection(section){
         
        // Find section contents from server
-
+        //try fetch profile
+       // console.log(`profile/${username}`)
+        //fetch(`profile/${username}`)
        fetch(`${section}`)
        .then(response => response.text())   
        .then(text => {
@@ -45,13 +47,14 @@ function handleClickEvent(evt) {
         display = createElement('div',null,null,null);
         
         if (section == "myposts"){
+         
             const keys = ["myposts"]
             keys.forEach(key=>{
 
                 myposts = result[key]
 
                 for (i in myposts){
-         
+                    
                     let post = createElement('div',null,'posts',null);
                     let contents = createElement('p',null,null,String(myposts[i]["contents"]));
                     let date_and_time = createElement('p',null,null,String(new Date(myposts[i]["date_and_time"])));     
@@ -188,12 +191,14 @@ function handleClickEvent(evt) {
         )
         username ="test"
         
+        console.log("local storage",localStorage)
         window.history.pushState({username:username},"",`${username}`);
         console.log(window.history)
         
         console.log(
             "onload,window location",location
         )
+        
         let section = "myposts"
         window.history.pushState({username:username,section:section},"",`${username}/${section}`);
         showSection("myposts");

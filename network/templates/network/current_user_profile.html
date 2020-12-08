@@ -13,7 +13,12 @@
     <div id ="profile-nav">
         <h1>{{username}}</h1>
         <div><span id ="connect"></span></div>
-        <p><a href ="#" id = "following_count">{{following_count}}  Following </a><a href ="#" id = "follower_count">{{follower_count}} Followers</a></p>
+        <div class ="follow">
+           
+                <span id = "following_count">{{following_count}}  Following  </span> 
+                <span id = "follower_count">{{follower_count}} Followers</span>
+              
+        </div>
         <hr>
 
 {% if page_info == "current user" %}

@@ -92,7 +92,9 @@ function save_post(postId,post_username){
     
     textarea = document.getElementById(`textarea_${postId}`)
     content =textarea.value
-    
+    if (content == ''){
+        return
+    }
     id = `eachpost_${postId}`
     parent = document.getElementById(id) 
     

@@ -27,18 +27,22 @@ def queryset_post_object(post_id):
     postobj= Post.objects.filter(id = post_id)
     return postobj
 
-def update_post(username,post_id,contents):
+def update_post(post_id,contents):
     
     """
     save the post after edit
     """
-
-    
-
-  
     date_time =timezone.now()
     postobj = Post.objects.filter(id = post_id)
     postobj.update(contents = contents, date_and_time =date_time)
     
     return postobj
+
+def delete_post(post_id,contents):
+    """
+    delete the post after edit
+    """
+    postobj = Post.objects.filter(id = post_id)
+    postobj.delete()
+    return 1
 
