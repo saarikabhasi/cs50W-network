@@ -1,67 +1,67 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect,Http404
-
 import json  
 from django.shortcuts import render
 from django.urls import reverse
 from . import forms
 from .models import *
-from datetime import datetime
 from django.db.models import F
 from . import util
 import time
 from django.utils import timezone
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
 
-def index(request,edit_post_form = ""):
-    print("INDEX: Show all posts")
-    
+def index(request):
+
+    """
+    1. display all the posts with pagination
+    2. user can like any post 
+    3. user can edit their own post
+    """
     if request.user.is_authenticated:
 
         all_posts = Post.objects.all().order_by('-date_and_time')
         allposts = paginate(request,all_posts)
-
-
-
-       
-
-        
-        
-        # page_obj = paginator.get_page(page_number)
-        # print("page",page_obj)
 
         post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
   
         return render(request,"network/index.html",{
             "allposts":allposts,
             "post_liked_ids":post_liked_ids,
-            "edit_post_form":edit_post_form,
-            # "page_obj":page_obj,
+           
         })
     else:
         return HttpResponseRedirect(reverse("network:login"))
 
         
-    # return render(request, "network/index.html")
 
 def paginate(request,argument):
+
+    """
+    1. Function to paginate - maximum 10 count on a page
+
+    """
     page_number = request.GET.get('page',1)
     paginator = Paginator(argument, 10) 
-    print("#of pages",paginator.count)
+
     try:
-        allposts = paginator.page(page_number)
+        paginated_argument = paginator.page(page_number)
     except PageNotAnInteger:
-        allposts = paginator.page(1)
+        paginated_argument = paginator.page(1)
     except EmptyPage:
-        allposts = paginator.page(paginator.num_pages)
+        paginated_argument = paginator.page(paginator.num_pages)
     
-    return allposts
+    return paginated_argument
         
 
 
 def login_view(request):
-    print("LOGIN")
+
+    """
+    1. Login 
+
+    """
     if request.method == "POST":
 
         # Attempt to sign user in
@@ -82,14 +82,21 @@ def login_view(request):
 
 
 def logout_view(request):
-    print("LOGOUT")
+    """
+    1. Logout
+
+    """
     logout(request)
     return HttpResponseRedirect(reverse("network:index"))
 
 
 def register(request):
-    print("REGISTER")
-    print("request.method",request.method)
+
+    """
+    1. Register
+
+    """
+  
     
     if request.method == "POST":
         username = request.POST["username"]
@@ -105,11 +112,10 @@ def register(request):
 
         # Attempt to create new user
         try:
-            print("Attempting to register")
-            print("Get all users:",User.objects.all())
+
             user = User.objects.create_user(username, email, password)
-            print("Register Success")
             user.save()
+
         except IntegrityError:
             return render(request, "network/register.html", {
                 "message": "Username already taken."
@@ -120,7 +126,12 @@ def register(request):
         return render(request, "network/register.html")
 
 def newpost(request):
-    print("NEW POST")
+    """
+    1. create new post form  if GET
+    2. get new post content if POST
+    3. update Post model 
+
+    """
     if request.user.is_authenticated:
         if request.method == "GET":
 
@@ -130,6 +141,7 @@ def newpost(request):
 
             })
         else:
+            # get contents from form
             newpost_form = forms.NewPostForm(request.POST)
             username = request.user.username
 
@@ -138,7 +150,7 @@ def newpost(request):
                 content = newpost_form.cleaned_data["contents"]
 
                 if len(content)>0:
-
+                    # update POST model
                     username = User.objects.get(username = username)
                     date_time = timezone.now()
                     post = Post(contents = content,user_id=username,date_and_time=date_time,num_of_likes=0)
@@ -156,10 +168,12 @@ def newpost(request):
     else:
         return HttpResponseRedirect(reverse("network:login"))
 
-def profile(request,user):
+def profile(request,user=""):
+    """
+    1. retrieves information and redirects to profile.html according to argument - user
 
-    print("PROFILE for ",user)
-    print("Mrthod",request.method)
+    """
+
     if request.user.is_authenticated:
         if request.method == "GET":
 
@@ -167,31 +181,35 @@ def profile(request,user):
             
         else:
             update_follow_form= forms.updatefollowForm(request.POST)
+
+        if len(user) == 0 or request.user.username == user:
+            # profile page for current user
         
-        if request.user.username == user:
-            return render(request,'network/current_user_profile.html',
+            return render(request,'network/profile.html',
                 {
                 "page_info":"current user",
                 "username":request.user.username,
                 "update_follow_form":update_follow_form,
                 })
         else:  
+            # profile page for other user
             if User.objects.filter(username = user):
-                
+                # get user object
                 userobj = util.get_user_obj(user)
+                #get user's posts
                 posts = get_all_post_by_user(request,user)
-                
-
+                #get user's liked posts
                 post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
-                
-                
+                #get user's follow counts 
                 following_count,follower_count = follow_counts(request,userobj)
+                #check if logged user follows or not following the given user
                 connect = follow_check(request,userobj)
-                print("connect?",connect)
-                return render(request,'network/current_user_profile.html',
+                
+                return render(request,'network/profile.html',
                 {
                 "page_info":"other user",
                 "username":user,
+                "other_user_id":userobj.id,
                 "posts":posts,
                 "following_count":following_count,
                 "follower_count":follower_count,
@@ -199,104 +217,131 @@ def profile(request,user):
                 "post_liked_ids":post_liked_ids,
                 })
             else:
+                #user not found
                 raise Http404("User Not Found")
     else:
         return HttpResponseRedirect(reverse("network:login"))   
 
 
 def follow_check(request,userobj):
+    """
+    1. check if current user follows the given user
+
+    """
     if request.user.is_authenticated:
         if request.user.username == userobj.username:
+            # checking if current user follows itself
             return "ERROR"
         else:
-            print("id",request.user.id)
+            # get count 
             check = len(Follow.objects.filter(follower = request.user.id).filter(following = userobj.id))
-            print(check)
+        
             if check > 0:
-                return "unfollow"
-            return "follow"
+                return "following"
+            return "notfollowimg"
     else:
         return HttpResponseRedirect(reverse("network:login"))   
 
 
 def section(request,user,category):
+    """
+    1. retrieves information about user based on category
+    2. Categories: myposts, networks, likes
+    3. creates a dictonary to store all the information
+    4. generates response string.  
 
+    """
     if request.user.is_authenticated:
-        print("SECTION function")
-        print("request method:",request.method)
-        print("request",request.path_info)
-       
+
         userobj = util.get_user_obj(request.user.username)
+        # get user's follow counts
         follow = follow_counts(request,userobj)
 
-        print("Category is:",category)
+        
         if request.method == 'GET':
 
             if category == "myposts":
-
+                # get user's posts
                 myposts = list(get_all_post_by_user(request))
-               
-                print("myposts",myposts)
+                # dictonary to store results
                 result= dict({"myposts":myposts})
                 
 
             elif category == "networks":
                 '''
-                We have three options:
-                1. user follows no one. in that case current_following is empty
-                2. user follows some. 
-                3. user follows all. 
+                Three options:
+                1. user follows no one. 
+                2. user follows all.  
+                3. user follows some.
                 '''
-    
-
                 current_following = Follow.objects.filter(follower = userobj.id)
 
                 if len(current_following) == 0:
-        
+                    #user follows no one.
                     user_can_follow =  list(User.objects.all().exclude(username = userobj).values('id','username'))
+                    
                     user_currently_follows  = 0
 
                 elif len(current_following) == len(User.objects.all().exclude(username = userobj)):
-                    #follow all (except itself)
+                    # user follows all (except itself)
 
                     user_can_follow = 0
 
                     ids = Follow.objects.values_list('following',flat= True).filter(follower = userobj.id)
                     user_currently_follows = list(User.objects.filter(id__in = set(ids)).values('id','username'))
-
-                    
-                    
+  
                 else :
                     # user follows some
                 
                     user_currently_follow_ids = Follow.objects.values_list('following',flat= True).filter(follower = userobj.id)
+                    
                     user_currently_follows = list(User.objects.filter(id__in = set(user_currently_follow_ids)).values('id','username'))
                     user_can_follow = list(User.objects.all().exclude(username = userobj).exclude(id__in = set(user_currently_follow_ids)).values('id','username'))
-
+                
+                # dictonary to store results
                 result = dict({"user_currently_follows":user_currently_follows,"user_can_follow":user_can_follow})
 
                 
                 
             elif category == "likes":
-
+                # get user's liked post
                 post_liked = list(get_myliked_post(request))
+                
+                # dictonary to store results
                 result = dict({"post_liked": post_liked})
-                print("result",result)
+                
 
             else:
+                #not a proper section
                 raise Http404("No such section")  
 
-            
+        # add follow information of the user to dictonary result
         result.update(follow)
+        # generate response as string
         response = json.dumps(result,default=str)
+        
         return HttpResponse(response,content_type = "application/json")
     else:
         return HttpResponseRedirect(reverse("network:login"))   
 
-def connect(request):
-    print("connect")
+def connect(request,user=""):
+    """
+    1. connect a given user 
+    
+    """
+    profile_args = True
+    """
+    profile_args is used to differentiate between different connect function call
+    There are totally two calls to connect 
+    1. From profile page: connect to other user from current user's section/category(networks)(via updatefollowform)
+    2. From profile page: connect to other user from other user profile page (via a form created by javascript)
+    """
     if request.user.is_authenticated:
+        if len(user) == 0:
+            # request from current user's profile page
+            profile_args = False
 
+        
         userobj = util.get_user_obj(request.user.username)
      
     
@@ -311,26 +356,33 @@ def connect(request):
                 changeTo = form.cleaned_data.get("btn")
             else:
                 print("form not valid",form.errors)    
-
+           
             if changeTo == "unfollow":
-                Follow.objects.filter(follower = userobj.id).filter(following = id).delete()
-
+                followobj = Follow.objects.filter(follower = userobj.id).filter(following = id)
+                followobj.delete()
+                
+                
             
             if changeTo == "follow":
                 userTobe = User.objects.filter(id = id)
                 instance = Follow.objects.create(follower = userobj)
                 instance.following.set(userTobe)
-      
-            
-        return HttpResponseRedirect(reverse('network:profile',kwargs={'user':request.user.username}))
-        #return HttpResponseRedirect(reverse('network:profile',kwargs={'user':request.user.username,'optional_section':"networks"}))
+        else:
+            print("Form not valid",form.errors)
+
+        if profile_args:
+            return HttpResponseRedirect(reverse('network:profile',kwargs={'user':user}))
+        return HttpResponseRedirect(reverse('network:profile'))
+        
         
     else:
         return HttpResponseRedirect(reverse("network:login")) 
   
 def follow_counts(request,userobj):
 
-    print("FOLLOW COUNT function")
+    """
+    1. retrieve follow counts of a given user
+    """
 
     following_count = Follow.objects.filter(follower = userobj).count()
     follower_count = Follow.objects.filter(following = userobj).count()
@@ -343,7 +395,6 @@ def follow_counts(request,userobj):
     
     return follower_count,following_count
     
-
 def get_all_post_by_user(request,required_user = ""):
     '''
     get all the post by user in reverse chronological order
@@ -358,14 +409,17 @@ def get_all_post_by_user(request,required_user = ""):
        
         userobj = util.get_user_obj(username)
         posts = Post.objects.filter(user_id = userobj.id).order_by('-date_and_time').values()
-        # print("GET All post",posts,"\n","type of posts",type(posts))
+        
         
         return posts
     else:
         return HttpResponseRedirect(reverse("network:login")) 
 
 def get_all_posts_of_user_network(request,userobj):
-    print("get_all_posts_of_user_network")
+    '''
+    get all posts made by users followed by current user
+
+    '''
     
     if request.user.is_authenticated:
         
@@ -377,90 +431,80 @@ def get_all_posts_of_user_network(request,userobj):
             return posts
     else:
         return HttpResponseRedirect(reverse("network:login")) 
+
 def get_myliked_post(request):
     '''
     show all the posts liked by user
 
     '''
-    print("get_myliked_post")
-
+    
     if request.user.is_authenticated:
 
 
         userobj = util.get_user_obj(request.user.username)
-
+        
         likeobj = Like.objects.values_list('post',flat=True).filter(user = userobj.id)
-        #print("like obj",likeobj)
-        postObj = Post.objects.filter(id__in = set(likeobj)).values()
-        # print("post obj",postObj)
+        
+        postObj = Post.objects.filter(id__in = set(likeobj)).order_by('-date_and_time').values()
+     
         return postObj
     else:
         return HttpResponseRedirect(reverse("network:login"))
         
 def update_like(request,post_id):
-    print("update like")
-    # print("args",username,post_id)
+    
+    '''
+    like feature
+    1. if user has already liked the post, remove the like from db 
+    2. if user has not already liked the post, add like to the like db
+    3. create result as dict 
+    4. generate response 
+    '''
+   
     if request.user.is_authenticated:
 
         userobj = util.get_user_obj(request.user.username)
         postobj = Post.objects.get(id = post_id)
 
-        # value = int(num_of_likes[0])
-
-        #check if post is liked by user
+        #check if post is already liked by user
         user_liked_post_ids = get_myliked_post(request).values_list("id",flat=True)
-        # print("user liked posts ids",user_liked_post_ids,"Len",len(user_liked_post_ids))
-        # print( "check if id exists",user_liked_post_ids.filter(id = post_id),len(user_liked_post_ids.filter(id = post_id)))
+        
         if len(user_liked_post_ids) > 0 and len(user_liked_post_ids.filter(id = post_id))>0:
-
-            print("remove like")
-            # val = int(num_of_likes[0]) - 1
-            #print("new val",val)
-            #delete  like info in table:Like
-
+            # user have liked the post so delete like from db
+            
             likeobj = Like.objects.filter(user = userobj.id).filter(post=post_id)
-            # print("Before delete likeobj",likeobj)
+            #delete
             likeobj = likeobj.delete()
-            # print("After delete",Like.objects.filter(user = userobj.id).filter(post=post_id))
-            # update num of likes in table : POST
 
-
-            #num_of_likes.update(num_of_likes=val)
-            #like_save_obj= Post.objects.filter(id = post_id).update(num_of_likes=F('num_of_likes')-1)
+            #reduce like count by 1
             postobj.num_of_likes = F('num_of_likes')-1
             postobj.save()
-            # print("num of likes",Post.objects.filter(id = post_id).values_list("num_of_likes",flat=True))
+
+            #generate dictonary 
             result = {"type":"remove"}
 
         else:
-            # val = int(num_of_likes[0]) + 1
-            #add_LIKE(val,userobj)
-            print("add like")
-            #update new like info in DB
-
-            # print("B4 LIKE",Like.objects.values_list('post',flat=True).filter(user = userobj.id))
+            # user had not liked the post, so add like to db
+         
             user_to_be = User.objects.filter(id = userobj.id)
             instance = Like.objects.create(post = postobj)
             instance.user.set(user_to_be)
-            # print("Inst and to be",instance,user_to_be)
-            # print("After LIKE",Like.objects.values_list('post',flat=True).filter(user = userobj.id))
-
-
-            # update num of likes in table : POST
-            # print("Before update of table:POST",Post.objects.filter(id = post_id).values_list("num_of_likes",flat=True) )
             
-            
-            # Post.objects.filter(id = post_id).update(num_of_likes=val)
-            #Post.objects.filter(id = post_id).update(num_of_likes=F('num_of_likes')+1)
+            #add like count by 1
             postobj.num_of_likes = F('num_of_likes')+1
             postobj.save()
-            # print("AFter update of table:POST",Post.objects.filter(id = post_id).values_list("num_of_likes",flat=True) )
+            
+            #generate dictonary 
             result = {"type":"add"}
 
         num_of_likes = Post.objects.filter(id = post_id).values_list("num_of_likes",flat=True)
+        
+        #add final like count to result
         result["num_of_likes"]=num_of_likes[0]
+        
+        # generate response
         response = json.dumps(result,default=str) 
-        #return reverse('network:index')
+        
         return HttpResponse(response,content_type = "application/json")
     else:
 
@@ -468,11 +512,14 @@ def update_like(request,post_id):
 
 
 def following_posts(request):
-    print("following")
+    """
+    1. Get all the post made by user followed by request user
+    2. paginate
+ 
+    """
     if request.user.is_authenticated:
 
         userobj = util.get_user_obj(request.user.username)
-        #posts = get_all_posts_of_user_network(request,userobj)
         posts = paginate(request,get_all_posts_of_user_network(request,userobj))
 
         return render (request, "network/following.html",{
@@ -484,20 +531,24 @@ def following_posts(request):
         return HttpResponseRedirect(reverse("network:login"))
 
 def edit_post(request,post_id):
-    print("edit post")
-    print(request.method)
+    """
+    1. get old post content from db
+    2. send content as HttpResponse
+
+    """
     
 
     if request.user.is_authenticated:
+        # get content
         content = util.queryset_post_content(post_id)
         
         if content:
             content = str(content[0])
-        print("content")
+       
         response = {"contents":content}
         response = json.dumps(response,default=str)
         
-        print("response",response)
+   
 
         return HttpResponse(response,content_type = "application/json")
        
@@ -506,19 +557,17 @@ def edit_post(request,post_id):
         return HttpResponseRedirect(reverse("network:login"))
 
 def save_post(request,post_id,content):
-    print("save post")
-    print(request.method)
-    print("args",post_id,content)
-    # print("1",inspect.stack()[1].function)
-    # print("2",inspect.stack()[2].function)
+    """
+    1. update new content
+    2. send new content as HttpResponse
+
+    """
+
+
     if request.user.is_authenticated:
         
         
         update_post = util.update_post(post_id,content)
-
-    
-
-        # postobj = Post.objects.all().values().filter(id = post_id)
         postobj = update_post.values()
 
         result = {"result":list(postobj)}
