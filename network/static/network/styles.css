@@ -113,13 +113,32 @@ div#signIn{
 #newpost-button{
    
 
-    color: white;
+    color: black;
     border:black;
     position: relative;;
     /* float: left; */
     margin-top: 10px;
     margin-bottom: 20px;
     margin-left: 0%;
+    /* border-bottom:1px solid black; */
+    
+}
+
+#newpost-button h1{
+    font-size: 1.7rem;
+}
+#newpost-button button.btn-primary{
+    font-size: 1.4rem;
+    color:#f0efef;
+    background-color: transparent;
+    text-decoration: underline;
+    border: none;   
+   
+}
+#newpost-button button.btn-primary:hover{
+    color: rgb(255, 255, 255);
+    background-color: rgb(8, 154, 202);
+    text-decoration: none;
 }
 
 #showposts {
@@ -131,48 +150,64 @@ div#signIn{
 
 
 } 
-.posts{
-    box-sizing: border-box;
-    border: 1px;
-    font-size: 25px;
+#showposts .card{
+    width: 70%;
+    padding:2rem;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+    background-color: rgb(231, 231, 231);
+    margin-left: 15%;
+    clear: both;
+}
+.fa-edit:hover{
+    color: #77a8a8 !important;
+}
+h2#post_userid{
+    color:black;
+    font-size: 1.8rem;
+    
+}
+h3#post_content{
+    color:black;
+    font-size: 1.5rem;
+}
+h4#post_dateandtime{
+    color:black;
+    font-size: 1.2rem;
+}
+h4.like{
+    color:black;
+    font-size: 1.2rem;
 }
 .hr_divide_heading{
-    border: 1px solid rgb(118, 117, 194);;
+    border: 1px dotted #c2d4dd; 
     /* border-radius: 100px; */
-    width: 100%;
+    /* width: 100%; */
 }
-#post{
-    text-align: left;
-    background-color: rgb(190, 190, 190);
-    display: grid;
-    padding: 40px 20px 20px 0px;
-    position:relative;
-    left:20px;
-    width: 70%;
-}
+
 
 #myposts{
     /* display: none; */
 }
-.fa-heart{
-    color:rgb(168, 168, 168);
-    border-color:black;
-}
-.fa-heart:hover{
-    color:red !important;
-}
+
 
 button#like{
     border: none;
-    background-color: rgb(240, 243, 217);;
+    background-color: transparent;
+    font-size: 1.5rem;
+    padding: 0px;
+   
+
 }
 button#edit{
+    color:#f0efef;
     border:none;
     font-size: 25px;
-    background-color: rgb(240, 243, 217);
+    background-color:transparent;
     text-decoration: underline;
 }
 button#edit:hover{
     color: black;
     font-weight: bold;
+    text-decoration: none;
 }

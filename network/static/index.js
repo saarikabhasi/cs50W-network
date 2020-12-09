@@ -20,16 +20,16 @@ function updatelike(ele){
         if (result["type"] === "add"){
             
             //red if post is liked by user
-            element.style.color = "red";
+            element.style.color = "#f7786b";
             
         }
         if (result["type"] === "remove"){
              //white if post not liked by other user
-            element.style.color = "rgb(168, 168, 168)"
+            element.style.color = "#f0efef"
             
         }
         
-        document.querySelector(id).innerHTML=result["num_of_likes"]
+        document.querySelector(id).innerHTML=result["num_of_likes"] +" like(s)"
 
     })
         
@@ -109,7 +109,7 @@ function save_post(postId,post_username){
     parent.querySelectorAll(`#textarea_${postId}`)[0].style.display = "none"
     
     post_div = createElement('div',null,id,null);
-
+    span =createElement('span',null,null,null);
     
     fetch(`savepost/${postId}/${content}`)
     
@@ -125,14 +125,14 @@ function save_post(postId,post_username){
                     
                     for (i in changed_post){
                         // create dom elements to display new content
-                        let user_id = createElement('h5',null,"post_userid",String(`${post_username}`));
+                        let user_id = createElement('h2',"card-title","post_userid",String(`${post_username}`));
                         
-                        let contents = createElement('p',null,"post_content",String(changed_post[i]["contents"]));
-                        let date_and_time = createElement('p',null,"post_dateandtime",String(new Date(changed_post[i]["date_and_time"])));     
-                        let num_of_likes = createElement('p',null,`num_likes_${postId}`,String(changed_post[i]["num_of_likes"]));
+                        let contents = createElement('h3',null,"post_content",String(changed_post[i]["contents"]));
+                        let date_and_time = createElement('h4',null,"post_dateandtime",String(new Date(changed_post[i]["date_and_time"])));     
+                        let num_of_likes = createElement('h4',null,`num_likes_${postId}`,`${String(changed_post[i]["num_of_likes"])} like(s)`);
                         
-                        appendChild(parent = post_div,user_id,contents,date_and_time,num_of_likes,likebutton[0],editbutton[0]);
-                        
+                        appendChild(parent = span,user_id,contents,date_and_time,num_of_likes,likebutton[0],editbutton[0]);
+                        appendChild(parent = post_div,span)
                     }
                 
             })
