@@ -47,6 +47,14 @@
                         
                     <div class = "card" id = eachpost_{{post.id}} >
                         <span>
+                            {% with post_username=post.user_id %}
+                            {% ifequal post_username|lower user.username|lower %}
+                            
+                                <button id = "edit" name ="edit"type="submit" value= {{post.id}} onclick = "edit_post('{{ post.id }}','{{ post_username }}')"><i class="fa fa-edit" style = "color:#f7786b"></i></button>
+                                <!-- <div id = "editpost"></div> -->
+                               
+                            {%endifequal%}
+                            {%endwith%}
                             <h2 id ="post_userid" class="card-title">{{post.user_id}}</h2>
                             <h3 id ="post_content">{{post.contents}}</h3>
                             <h4 id ="post_dateandtime">{{post.date_and_time}}</h4>
@@ -60,14 +68,7 @@
                             {% endif %}
 
 
-                            {% with post_username=post.user_id %}
-                            {% ifequal post_username|lower user.username|lower %}
                             
-                                <button id = "edit" name ="edit"type="submit" value= {{post.id}} onclick = "edit_post('{{ post.id }}','{{ post_username }}')"><i class="fa fa-edit" style = "color:#f7786b"></i></button>
-                                <!-- <div id = "editpost"></div> -->
-                               
-                            {%endifequal%}
-                            {%endwith%}
                             <!-- <hr class="hr_divide_heading">   -->
                         </span>
                     </div>

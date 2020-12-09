@@ -131,7 +131,7 @@ function save_post(postId,post_username){
                         let date_and_time = createElement('h4',null,"post_dateandtime",String(new Date(changed_post[i]["date_and_time"])));     
                         let num_of_likes = createElement('h4',null,`num_likes_${postId}`,`${String(changed_post[i]["num_of_likes"])} like(s)`);
                         
-                        appendChild(parent = span,user_id,contents,date_and_time,num_of_likes,likebutton[0],editbutton[0]);
+                        appendChild(parent = span,editbutton[0],user_id,contents,date_and_time,num_of_likes,likebutton[0]);
                         appendChild(parent = post_div,span)
                     }
                 

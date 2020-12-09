@@ -62,23 +62,27 @@ def login_view(request):
     1. Login 
 
     """
-    if request.method == "POST":
-
-        # Attempt to sign user in
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-
-        # Check if authentication successful
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse("network:index"))
-        else:
-            return render(request, "network/login.html", {
-                "message": "Invalid username and/or password."
-            })
+    
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("network:index"))
     else:
-        return render(request, "network/login.html")
+        if request.method == "POST":
+
+            # Attempt to sign user in
+            username = request.POST["username"]
+            password = request.POST["password"]
+            user = authenticate(request, username=username, password=password)
+
+            # Check if authentication successful
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect(reverse("network:index"))
+            else:
+                return render(request, "network/login.html", {
+                    "message": "Invalid username and/or password."
+                })
+        else:
+            return render(request, "network/login.html")
 
 
 def logout_view(request):
@@ -97,7 +101,8 @@ def register(request):
 
     """
   
-    
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("network:index"))
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]

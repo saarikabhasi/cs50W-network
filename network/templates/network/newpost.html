@@ -5,14 +5,16 @@
 {% endblock %}
 
 {% block body %}
-<h1> Create Post</h1>
-<div >
-    <h2> {{user.username}} </h2>
+
+<div id ="newpost-div">
+    <h2> Write new post</h2>
     <form action="{% url 'network:newpost'  %}" method="POST"  >
         {% csrf_token %}          
         
         {{newpost_form}}
-        <button type="submit"  name = "newpost" id ="newpost">post</button>
+        
+            <button type="submit"  name = "newpost" id ="newpost" class="btn btn-primary">post</button>
+        
         
         
     </form> 
