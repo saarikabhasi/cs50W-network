@@ -1,14 +1,14 @@
-
+   // save section when back button is clicked
     window.onpopstate = function(event) {
-        console.log(event.state.section);
+      
         showSection(event.state.section);
     }
-    //Show given section
+    
     function showSection(section){
-        
+        //Show section
        // Find section contents from server
 
-       console.log("loc",document.location,document.location.pathname)
+    
        if (document.location.pathname.includes("profile") ){
            path = `${username}/${section}`
        }
@@ -19,9 +19,10 @@
         .then(response => response.text())   
         .then(text => {
             /* 
-            section : 1 display my posts
-                : 2 display networks
-                : 3 display all liked posts 
+            section : 
+                1 display my posts
+                2 display networks
+                3 display all liked posts 
             */
 
             var result = JSON.parse(text);
@@ -71,8 +72,6 @@
                         
 
                             let loc = "/network/connect"
-                            
-                            // var form = createForm("post",document.location+"/connect")
                             var form = createForm("post",loc)
                             var crsf = formCrsf();
     
@@ -89,11 +88,9 @@
                     
                             let hr = createElement('hr','hr_divide_heading',null,null,null)
 
-                            appendChild(parent =whotofollow,username,form,hr);
-                            
-                            
+                            appendChild(parent =whotofollow,username,form,hr);  
                             appendChild(parent =display,whotofollow);
-                            //IMPO
+                            
                         }
                     }
                     
@@ -116,7 +113,8 @@
                     posts = result[key]
 
                     for (i in posts){
-            
+                        // create dom for all the posts liked by user
+
                         let post = createElement('div',null,'posts',null);
                         let contents = createElement('p',null,null,String(posts[i]["contents"]));
                         let date_and_time = createElement('p',null,null,String(new Date(posts[i]["date_and_time"])));     
@@ -127,6 +125,7 @@
                         appendChild(parent =display,post);
 
                     }
+                    //show no like message
                     if (posts.length == 0){
                         let post = createElement('div',null,'posts',null);
                         let contents = createElement('p',null,null,"You have not yet liked any posts");
@@ -158,23 +157,16 @@
 
     window.onload = function(){
 
-        // by default show my posts
+        // by default show myposts
 
-        console.log("log") 
-        
-        //window.history.pushState({username:username},"",`${username}`);
-        
-        
-  
         let section = "myposts"
-        //window.history.pushState({username:username,section:section},"",`${username}/${section}`);
         window.history.pushState({section:section},"",`${section}`);
         showSection("myposts");
         
 
     }
     
-    url = window.location.href
+
     document.addEventListener('DOMContentLoaded',function(){
 
         

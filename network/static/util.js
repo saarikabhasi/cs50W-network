@@ -1,5 +1,6 @@
+// header file used by other javascript file
 function formCrsf(){
-
+    //csrf
     var crsf = document.createElement("input");
     crsf.setAttribute("type","hidden");
     crsf.setAttribute("name","csrfmiddlewaretoken");
@@ -10,7 +11,7 @@ function formCrsf(){
 }
 
 function createElement(tag,className,idName,content){
-
+    //createElement
     element = document.createElement(tag);
 
     if (className){element.className = className;}
@@ -22,6 +23,7 @@ function createElement(tag,className,idName,content){
 }
 
 function createForm(method,action,onsubmit,id){
+    //form
 
     element = document.createElement("form");
     if (method){element.setAttribute('method',method);}
@@ -34,6 +36,8 @@ function createForm(method,action,onsubmit,id){
 }
 
 function createButton(type,idName,className,name,value,content){
+    //button
+
     element = document.createElement("button")
     if (type){element.type = type;}
     if (className){element.className = className;}
@@ -46,6 +50,7 @@ function createButton(type,idName,className,name,value,content){
 }
 
 function createTextarea(rows,cols,id,name,content,form){
+    //textarea
     element = document.createElement("textarea")
     if (rows){element.rows = rows;}
     if (cols){element.cols = cols;}
@@ -57,7 +62,7 @@ function createTextarea(rows,cols,id,name,content,form){
     return element
 }
 function appendChild(parent,...args){
-
+    //appendchild
     for (let i =0 ;i<args.length;i++){
         parent.appendChild(args[i]); 
     }

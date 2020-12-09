@@ -2,23 +2,59 @@
 
 {% block body %}
 
-    <h2>Login</h2>
 
-    {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
 
-    <form action="{% url 'network:login' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Login">
-    </form>
+<div class = "card" id = "signIn">
+    <fieldset>
+        <legend class="card-body"> 
+            <h2 class="card-title">
+                <div>
 
-    Don't have an account? <a href="{% url 'network:register' %}">Register here.</a>
+                        Don't have an account? 
+
+                    <span>
+                        <a href="{% url 'network:register' %}" class = "btn-link" id="createaccount">Register here.</a> 
+                    </span>
+                </div>
+            </h2>
+        </legend>
+    </fieldset>
+
+    <fieldset class="card-body">
+        <legend >
+            <h2 class="card-title">Sign In </h2>
+        
+            <form action="{% url 'network:login' %}" method="post" class = "card-body">
+                {% csrf_token %} 
+                {% if message %}
+                    <p class="notfound">{{ message }}</p>
+                {% endif %}
+                <div class = "form-group ">
+                    <fieldset>
+                        <legend><h3>Enter your username</h3>
+                            
+                            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+                        </legend>
+                    </fieldset>
+                </div>
+                
+                <div class="form-group">          
+                    <fieldset>
+
+                        <legend><h3>Enter your password</h3>
+                            <input class="form-control" type="password" name="password" placeholder="Password">
+                        </legend>
+                    </fieldset>
+                </div>
+            
+                <div class="form-group">
+                    <input class="btn btn-primary" type="submit" value="Login">
+                
+                </div>
+
+            </form>
+        </legend> 
+    </fieldset>
+</div>
 
 {% endblock %}
