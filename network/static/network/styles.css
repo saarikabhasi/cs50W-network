@@ -3,7 +3,9 @@ body {
     position:relative;
     width: 100%;
     height: 100%; 
-    background-color:rgb(240, 243, 217);
+    /* background-color:rgb(240, 243, 217); */
+    /* background-color: skyblue; */
+    background-color: #b0aac0;
 }
 
 
@@ -30,19 +32,38 @@ button:hover{
     color: rgb(245, 77, 77)  !important;
     font-size: 1.2rem;
 } 
-#side-nav{
+#mini-nav{
     background-color: rgb(28, 119, 119) !important;
 }
 
 #main-nav{
-    background-color:rgb(201, 173, 207) !important;
-    border-bottom:1px solid  rgb(24, 23, 24);
-    font-size: 25px;
+    /* background-color:rgb(193, 191, 194) !important; */
+    background-color:#f0efef!important; ;
+    
+    border-bottom:1px solid  rgb(151, 147, 151);
+    font-size: 1.5rem;
+}
+#main-nav a.nav-link{
+    color: #3b3a30;  
+    font-size: 1.4rem;
+    margin-left: 1rem;
+    margin-top: 1rem;
+    margin-right: 1rem  ;
+}
+#main-nav a.nav-link:hover{
+    color: #77a8a8;
+    text-decoration: underline;
 }
 #logo{
     font-size: 30px;
-    color: rgb(24, 23, 24);
+    color:#77a8a8;
+    margin-left: 1rem;
+    margin-top: 1rem;
+    margin-right: 1rem  ;
   
+}
+#logo:hover{
+    color: #77a8a8;
 }
 div#signIn{
     margin-left: 25%;
@@ -51,6 +72,7 @@ div#signIn{
     margin-bottom: 0px;
     clear: both;
     /* height: 700px;  */
+    background-color: rgb(231, 231, 231);
 }
 #signIn h2{
     color: rgb(84, 82, 82);
@@ -67,13 +89,13 @@ div#signIn{
     font-size: 1.4rem;
     color:rgb(0, 132, 184);
    
-    text-decoration-line: underline;
+    
 
 }
 #signIn a.btn-link:hover{
     color: rgb(2, 47, 65);
+    text-decoration-line: underline;
     
-    text-decoration: none;
 }
 #signIn input.btn-primary{
     font-size: 1.4rem;
