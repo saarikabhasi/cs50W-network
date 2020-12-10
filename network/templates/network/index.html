@@ -60,7 +60,7 @@
                             <h4 id ="post_dateandtime">{{post.date_and_time}}</h4>
                             <h4 id ='num_likes_{{post.id}}' class='like'>{{post.num_of_likes}} like(s)</h4>
     
-
+                           
                             {% if post.num_of_likes > 0 and post_liked_ids|length  and post.id in post_liked_ids %}
                                 <button id ="like"  value ="{{post.id}}" ><i class="fa fa-heart" style = "color:#f7786b"></i></button>
                             {% else %}

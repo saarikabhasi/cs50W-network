@@ -11,7 +11,97 @@
         <div class ="message">
 
         </div>
-        <div id ="showposts"> 
+        <div class = "container-allpost"  >
+
+            {% if allposts.has_other_pages %}
+            <ul class="pagination justify-content-center">
+                {% if allposts.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ allposts.previous_page_number }}">Previous</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                {% endif %}
+                {% for i in allposts.paginator.page_range %}
+                    {% if allposts.number == i %}
+                        <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if allposts.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ allposts.next_page_number }}">Next</a></li>
+                {% else %}
+                <li class="disabled page-item"><span class="page-link">Next</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+            <section>
+                <article id ="showposts">
+                   
+                    {% for post in allposts %}
+                            
+                        <div class = "card" >
+                            <span>
+                                {% with post_username=post.user_id %}
+                                {% ifequal post_username|lower user.username|lower %}
+                                
+                                    <button id = "edit" name ="edit"type="submit" value= {{post.id}} onclick = "edit_post('{{ post.id }}','{{ post_username }}')"><i class="fa fa-edit" style = "color:#f7786b"></i></button>
+                                    <!-- <div id = "editpost"></div> -->
+                                   
+                                {%endifequal%}
+                                {%endwith%}
+                                <h2 id ="post_userid" class="card-title">{{post.user_id}}</h2>
+                                <h3 id ="post_content">{{post.contents}}</h3>
+                                <h4 id ="post_dateandtime">{{post.date_and_time}}</h4>
+                                <h4 id ='num_likes_{{post.id}}' class='like'>{{post.num_of_likes}} like(s)</h4>
+        
+ 
+                                {% if post.num_of_likes > 0 and post_liked_ids|length  and post.id in post_liked_ids %}
+                                    <button id ="like"  value ="{{post.id}}" ><i class="fa fa-heart" style = "color:#f7786b"></i></button>
+                                {% else %}
+                                    <button id ="like" value ="{{post.id}}" ><i class="fa fa-heart" style = "color:#b0aac0"></i></button>
+                                {% endif %}
+    
+    
+                                
+                               
+                            </span>
+                        </div>
+                    {% empty %}
+            
+                    <h5>No posts</h5>
+                            
+                    {% endfor %}
+                    
+                </article>
+            </section>
+         
+            
+    
+        
+            {% if allposts.has_other_pages %}
+            <ul class="pagination justify-content-center">
+                {% if allposts.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ allposts.previous_page_number }}">Previous</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                {% endif %}
+                {% for i in allposts.paginator.page_range %}
+                    {% if allposts.number == i %}
+                        <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if allposts.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ allposts.next_page_number }}">Next</a></li>
+                {% else %}
+                <li class="disabled page-item"><span class="page-link">Next</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+        </div>
+
+        <!-- <div id ="showposts"> 
             {% for post in posts %}
                 <hr class="hr_divide_heading">  
                 <div id= "post">
@@ -45,7 +135,7 @@
             <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
             {% endif %}
         </ul>
-    {% endif %}
+    {% endif %} -->
     </article>
 </section>
 {% endblock %}

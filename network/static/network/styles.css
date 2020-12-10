@@ -34,6 +34,9 @@ footer{
     background: rgb(115, 128, 0);
     
 } */
+button{
+    outline:none !important
+}
 .btn-primary{
     font-size: 1.3rem;
 
@@ -91,7 +94,7 @@ footer{
 
 }
 #logo{
-    font-size: 30px;
+    font-size: 2rem;
     color:#77a8a8;
     margin-left: 1rem;
     margin-top: 1rem;
@@ -163,7 +166,7 @@ div#signIn{
 }
 
 #newpost-button h1{
-    font-size: 1.7rem;
+    font-size: 1.5rem;
 }
 button.btn-primary{
     font-size: 1.4rem;
@@ -296,10 +299,12 @@ button#edit:hover{
     text-decoration: underline;
 }
 #profile-nav h1{
-    font-size: 4rem;
+    font-size: 1.8rem;
     text-align:center;
+    text-transform: capitalize !important;
 }
 #profile-nav .follow{
-    font-size: 2rem;
+    font-size: 1.5rem;
     text-align:center;
+    text-transform: capitalize !important;
 }

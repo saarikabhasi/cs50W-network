@@ -526,11 +526,12 @@ def following_posts(request):
 
         userobj = util.get_user_obj(request.user.username)
         posts = paginate(request,get_all_posts_of_user_network(request,userobj))
-
+        post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
         return render (request, "network/following.html",{
-            "posts": posts},
+            "allposts": posts,
+            "post_liked_ids":post_liked_ids,
 
-        )
+        })
     else:
 
         return HttpResponseRedirect(reverse("network:login"))
