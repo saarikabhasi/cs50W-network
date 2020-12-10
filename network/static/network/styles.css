@@ -30,10 +30,10 @@ footer{
     border-radius: 100px;
     color: rgb(160, 38, 160);
 } */
-button:hover{
+/* button:hover{
     background: rgb(115, 128, 0);
     
-}
+} */
 .btn-primary{
     font-size: 1.3rem;
 
@@ -43,7 +43,10 @@ button:hover{
     font-size: 1.2rem;
 } 
 #mini-nav{
-    background-color: rgb(28, 119, 119) !important;
+    /* background-color:#829095!important;  */
+    background-color:#E4F1F6!important;
+    font-size: 1.3rem;
+    position: relative;
 }
 
 #main-nav{
@@ -55,7 +58,7 @@ button:hover{
     position: relative;
     /* height: 100px;  */
 }
-#main-nav a.nav-link{
+#main-nav a.nav-link, #mini-nav button.nav-link{
     color: #f1f1f1;
     font-size: 1.4rem;
     margin-left: 1rem;
@@ -63,9 +66,29 @@ button:hover{
     margin-right: 1rem  ;
   
 }
+#mini-nav button.nav-link{
+    color: teal !important;
+    border: none;
+    background-color:#E4F1F6!important;
+    margin-left: 7.5rem;
+    margin-top: 1rem;
+    margin-right: 7.5rem  ;
+    
+}
 #main-nav a.nav-link:hover{
     color: #092834;
     text-decoration: underline;
+}
+#mini-nav button.nav-link:hover{
+    color:#092834 !important;
+    text-decoration: underline;
+    /* color:#347B98 !important; */
+}
+#mini-nav button.active{
+    
+    /* background-color: rgb(182, 186, 187) !important; */
+    text-decoration: underline;
+
 }
 #logo{
     font-size: 30px;
@@ -157,7 +180,7 @@ button.btn-primary:hover{
 }
 
 
-#showposts {
+#showposts,#result {
     text-align: left;
     margin-top: 100px;
     margin-bottom: 20px;    
@@ -166,7 +189,7 @@ button.btn-primary:hover{
 
 
 } 
-#showposts .card{
+#showposts .card, #result, .card{
     width: 70%;
     padding:2rem;
     margin-bottom: 1rem;
@@ -271,4 +294,12 @@ button#edit:hover{
 }
 #newpost-div .btn-primary:hover{
     text-decoration: underline;
+}
+#profile-nav h1{
+    font-size: 4rem;
+    text-align:center;
+}
+#profile-nav .follow{
+    font-size: 2rem;
+    text-align:center;
 }

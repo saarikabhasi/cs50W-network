@@ -28,6 +28,7 @@
             var result = JSON.parse(text);
             display = createElement('div',null,null,null);
             
+
             if (section == "myposts"){
             
                 const keys = ["myposts"]
@@ -36,18 +37,21 @@
                     myposts = result[key]
 
                     for (i in myposts){
-                        
-                        let post = createElement('div',null,'posts',null);
-                        let contents = createElement('p',null,null,String(myposts[i]["contents"]));
-                        let date_and_time = createElement('p',null,null,String(new Date(myposts[i]["date_and_time"])));     
-                        let num_of_likes = createElement('p',null,null,String(myposts[i]["num_of_likes"]));
+                        let card =createElement('div',"card",null,null);
+                        let span = createElement('span',null,null,null);
+                        let poster = createElement('h2',"card-title","post_userid",`${username}`);
+                        let contents = createElement('h3',null,"post_content",String(myposts[i]["contents"]));
+                        let date_and_time = createElement('h4',null,"post_dateandtime",String(new Date(myposts[i]["date_and_time"])));     
+                        let num_of_likes = createElement('h4',null,null,`${String(myposts[i]["num_of_likes"])} like(s)`);
                         
 
 
-                        hr = createElement('hr','hr_divide_heading',null,null);
+                        // hr = createElement('hr','hr_divide_heading',null,null);
+                        appendChild(parent = span,poster,contents,date_and_time,num_of_likes);
+                        appendChild(parent = card,span);
+                        // appendChild(parent =card,div);
+                        appendChild(parent =display,card);
                         
-                        appendChild(parent = post,contents,date_and_time,num_of_likes,hr);
-                        appendChild(parent =display,post);
 
                     }
                 })
@@ -62,11 +66,12 @@
                 keys.forEach (key=>{
                     networks= result[key]
                     if (networks){
-                        let whotofollow = createElement('div',null,key,null)
+                        // let whotofollow = createElement('div',null,key,null)
                         for (i = 0; i<networks.length; i++){
-                        
-                            let username = createElement('p',null,null,String(networks[i]["username"]))
-                            
+                            let card =createElement('div',"card",null,null);
+                            let span = createElement('span',null,null,null);
+                            let username = createElement('h2',"card-title","post_userid",String(networks[i]["username"]))
+
                             inc = networks[i]["id"]
     
                         
@@ -83,13 +88,16 @@
                                 
                                 var togglebutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value =' + inc +' /> <input type= "submit"  name = "btn"  value =  follow />')
                             }
+                            
                             appendChild(parent =form,crsf,togglebutton);
                             
                     
-                            let hr = createElement('hr','hr_divide_heading',null,null,null)
-
-                            appendChild(parent =whotofollow,username,form,hr);  
-                            appendChild(parent =display,whotofollow);
+                            // let hr = createElement('hr','hr_divide_heading',null,null,null)
+                            appendChild(parent =span,username,form )
+                            //appendChild(parent =whotofollow,username,form,hr);  
+                            appendChild(parent =card,span )
+                            // appendChild(parent =display,whotofollow);
+                            appendChild(parent =display,card);
                             
                         }
                     }
@@ -114,15 +122,22 @@
 
                     for (i in posts){
                         // create dom for all the posts liked by user
+                       
 
-                        let post = createElement('div',null,'posts',null);
-                        let contents = createElement('p',null,null,String(posts[i]["contents"]));
-                        let date_and_time = createElement('p',null,null,String(new Date(posts[i]["date_and_time"])));     
-                        let num_of_likes = createElement('p',null,null,String(posts[i]["num_of_likes"]));
-                        hr = createElement('hr','hr_divide_heading',null,null);
+                        let card =createElement('div',"card",null,null);
+                        let span = createElement('span',null,null,null);
+                        let poster = createElement('h2',"card-title","post_userid","poster name");
+                        let contents = createElement('h3',null,"post_content",String(posts[i]["contents"]));
+                        let date_and_time = createElement('h4',null,"post_dateandtime",String(new Date(posts[i]["date_and_time"])));     
+                        let num_of_likes = createElement('h4',null,null,`${String(posts[i]["num_of_likes"])} like(s)`);
                         
-                        appendChild(parent = post,contents,date_and_time,num_of_likes,hr);
-                        appendChild(parent =display,post);
+
+
+                    
+                        appendChild(parent = span,poster,contents,date_and_time,num_of_likes);
+                        appendChild(parent = card,span);
+                      
+                        appendChild(parent =display,card);
 
                     }
                     //show no like message
@@ -179,8 +194,8 @@
 
                 var current = document.getElementsByClassName("active");    
                 
-                current[0].className = current[0].className.replace("active", "");
-                this.className ="active";
+                current[0].className = current[0].className.replace("nav-link active", "nav-link");
+                this.className =" nav-link active";
 
                 
  
