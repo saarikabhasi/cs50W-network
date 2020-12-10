@@ -37,14 +37,22 @@ function updatelike(ele){
         
 }
 // call likefeature function when page is loaded
-likefeature();
+
+    likefeature();
+    
+    
+
+
+
+
 
 function likefeature(){
+
     //call updatelike whenever like button is click
     document.querySelectorAll("#like").forEach( e=> {
-
+        
         e.onclick = function(){
-    
+
             updatelike(this)
         }
     });
@@ -58,6 +66,7 @@ function save_btns (id){
     parent  = document.getElementById(id)
     likebutton = parent.querySelectorAll("#like")
     editbutton = parent.querySelectorAll("#edit")
+    deletebutton = parent.querySelectorAll("#delete")
     
     return 1
 }
@@ -131,7 +140,7 @@ function save_post(postId,post_username){
                         let date_and_time = createElement('h4',null,"post_dateandtime",String(new Date(changed_post[i]["date_and_time"])));     
                         let num_of_likes = createElement('h4',null,`num_likes_${postId}`,`${String(changed_post[i]["num_of_likes"])} like(s)`);
                         
-                        appendChild(parent = span,editbutton[0],user_id,contents,date_and_time,num_of_likes,likebutton[0]);
+                        appendChild(parent = span,editbutton[0],deletebutton[0],user_id,contents,date_and_time,num_of_likes,likebutton[0]);
                         appendChild(parent = post_div,span)
                     }
                 
@@ -145,9 +154,21 @@ function save_post(postId,post_username){
         })
             
 }
-
-
-
-
+function delete_post(post_id){
+    
+    id = `eachpost_${post_id}`
+    postDiv = document.getElementById(id)
+    fetch(`deletepost/${post_id}`)
+    .then(response =>{
+        if (!response.ok){
+            throw new Error('problem with delete the post');
+        }
+        else{
+            
+            postDiv.remove();
+        }
+    })
+}
+        
 
 

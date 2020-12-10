@@ -36,15 +36,15 @@
             <ul class="navbar-nav">
                 <li class="nav-item ">
  
-                    <button  class =" nav-link active" data-section="myposts">My Posts </button>
+                    <button  id ="button" class ="nav-link active" data-section="myposts">My Posts </button>
                 </li>
                 <li class="nav-item">
 
-                    <button class ="nav-link" data-section="networks">My Networks</button>
+                    <button  id ="button" class ="nav-link" data-section="networks">My Networks</button>
                 </li>
                 <li class="nav-item">
                     
-                    <button class ="nav-link" data-section="likes">My Likes</button>
+                    <button  id ="button" class ="nav-link" data-section="likes">My Likes</button>
                 </li>
             </ul>
         </nav>
@@ -60,8 +60,9 @@
 
 
 </div>
-
 <script type ="text/javascript" src="{% static 'profile.js' %}"></script>
+<script type ="text/javascript" src="{% static 'index.js' %}"></script>
+
 
 {% else %}
 <!-- profile page of other user -->

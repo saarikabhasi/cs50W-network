@@ -19,7 +19,7 @@ urlpatterns = [
     path("savepost/<int:post_id>/<str:content>",views.save_post,name="save_post"),
     path("savepost/<int:post_id>/",views.save_post,name="save_post"),
     path("like/<int:post_id>", views.update_like, name="update_like"),
-    
+     path("deletepost/<int:post_id>", views.delete_post, name="delete_post"),
     path("connect/<str:user>",views.connect,name="connect"),
     path("connect",views.connect,name="connect"),
     

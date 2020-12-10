@@ -38,11 +38,13 @@ def update_post(post_id,contents):
     
     return postobj
 
-def delete_post(post_id,contents):
+def delete_post(post_id):
     """
-    delete the post after edit
+    delete the post
     """
     postobj = Post.objects.filter(id = post_id)
-    postobj.delete()
-    return 1
+    if postobj:
+        postobj.delete()
+        return 1
+    return 0
 

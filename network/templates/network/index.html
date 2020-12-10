@@ -52,9 +52,16 @@
                             
                                 <button id = "edit" name ="edit"type="submit" value= {{post.id}} onclick = "edit_post('{{ post.id }}','{{ post_username }}')"><i class="fa fa-edit" style = "color:#f7786b"></i></button>
                                 <!-- <div id = "editpost"></div> -->
+                             
+
+                                
+                                <button id="delete" name = "delete" type = "submit" value= {{post.id}} onclick = "delete_post('{{ post.id }}')"  ><i class="fa fa-trash" style = "color:#f7786b"></i></button>
                                
+                             
                             {%endifequal%}
                             {%endwith%}
+                            
+                            
                             <h2 id ="post_userid" class="card-title">{{post.user_id}}</h2>
                             <h3 id ="post_content">{{post.contents}}</h3>
                             <h4 id ="post_dateandtime">{{post.date_and_time}}</h4>
@@ -67,9 +74,11 @@
                                 <button id ="like" value ="{{post.id}}" ><i class="fa fa-heart" style = "color:#b0aac0"></i></button>
                             {% endif %}
 
+                            
+
 
                             
-                            <!-- <hr class="hr_divide_heading">   -->
+                         
                         </span>
                     </div>
                 {% empty %}

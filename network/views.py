@@ -12,7 +12,7 @@ import time
 from django.utils import timezone
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
 
-def index(request):
+def index(request,message =""):
 
     """
     1. display all the posts with pagination
@@ -29,6 +29,7 @@ def index(request):
         return render(request,"network/index.html",{
             "allposts":allposts,
             "post_liked_ids":post_liked_ids,
+            "message":message,
            
         })
     else:
@@ -262,15 +263,16 @@ def section(request,user,category):
         # get user's follow counts
         follow = follow_counts(request,userobj)
 
-        
+        post_liked_ids = list(get_myliked_post(request).values_list("id",flat= True))
         if request.method == 'GET':
 
             if category == "myposts":
                 # get user's posts
                 myposts = list(get_all_post_by_user(request))
-                # dictonary to store results
-                result= dict({"myposts":myposts})
                 
+                # dictonary to store results
+                result= dict({"myposts":myposts,"post_liked_ids":post_liked_ids})
+                # post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
 
             elif category == "networks":
                 '''
@@ -311,10 +313,14 @@ def section(request,user,category):
             elif category == "likes":
                 # get user's liked post
                 post_liked = list(get_myliked_post(request))
-                
+                post_liked_user_ids = list(get_myliked_post(request).values_list("user_id",flat= True))
+
+                post_liked_user_id_and_username = User.objects.filter(id__in = set(post_liked_user_ids)).values_list("id","username")
+                post_liked_user_id_and_username = dict(post_liked_user_id_and_username)
+              
                 # dictonary to store results
-                result = dict({"post_liked": post_liked})
-                
+                result = dict({"post_liked": post_liked ,"post_liked_ids":post_liked_ids,"post_liked_user_id_and_username":post_liked_user_id_and_username})
+
 
             else:
                 #not a proper section
@@ -451,7 +457,7 @@ def get_myliked_post(request):
         likeobj = Like.objects.values_list('post',flat=True).filter(user = userobj.id)
         
         postObj = Post.objects.filter(id__in = set(likeobj)).order_by('-date_and_time').values()
-     
+   
         return postObj
     else:
         return HttpResponseRedirect(reverse("network:login"))
@@ -585,3 +591,15 @@ def save_post(request,post_id,content):
 
         return HttpResponseRedirect(reverse("network:login"))
 
+def delete_post(request,post_id):
+    """
+    
+    1. delete given postid from db
+    
+    """
+    
+    if (util.delete_post(post_id)):
+        return HttpResponse(status =200)
+    
+    return HttpResponse(status = 400 )
+    
