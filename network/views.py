@@ -305,20 +305,21 @@ def section(request,user,category):
                 #     user_currently_follows = list(User.objects.filter(id__in = set(user_currently_follow_ids)).values('id','username'))
                 #     user_can_follow = list(User.objects.all().exclude(username = userobj).exclude(id__in = set(user_currently_follow_ids)).values('id','username'))
                 
-                user_currently_follows,user_can_follow = util.get_user_networks(request.user.username)
+                following,suggestions = util.get_user_networks(request.user.username)
                 # dictonary to store results
-                if user_currently_follows == 0:
-                    user_currently_follows = 0
+                if following == 0:
+                    following = 0
                 else:
-                    user_currently_follows =list(user_currently_follows)
+                    following =list(following)
 
-                if user_can_follow == 0:
-                    user_can_follow = 0
+                if suggestions == 0:
+                    suggestions = 0
                 else:
-                    user_can_follow =list(user_can_follow)    
+                    suggestions =list(suggestions)    
                
-                print(user_currently_follows,user_can_follow)
-                result = dict({"user_currently_follows":user_currently_follows,"user_can_follow":user_can_follow})
+              
+
+                result = dict({"following":following,"suggestions":suggestions})
 
                 
                 
@@ -342,6 +343,7 @@ def section(request,user,category):
         result.update(follow)
         # generate response as string
         response = json.dumps(result,default=str)
+        print("RESO",response)
         
         return HttpResponse(response,content_type = "application/json")
     else:
