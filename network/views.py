@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect,Http404
 import json  
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.urls import reverse
 from . import forms
 from .models import *
@@ -281,31 +281,43 @@ def section(request,user,category):
                 2. user follows all.  
                 3. user follows some.
                 '''
-                current_following = Follow.objects.filter(follower = userobj.id)
+                # current_following = Follow.objects.filter(follower = userobj.id)
 
-                if len(current_following) == 0:
-                    #user follows no one.
-                    user_can_follow =  list(User.objects.all().exclude(username = userobj).values('id','username'))
+                # if len(current_following) == 0:
+                #     #user follows no one.
+                #     user_can_follow =  list(User.objects.all().exclude(username = userobj).values('id','username'))
                     
-                    user_currently_follows  = 0
+                #     user_currently_follows  = 0
 
-                elif len(current_following) == len(User.objects.all().exclude(username = userobj)):
-                    # user follows all (except itself)
+                # elif len(current_following) == len(User.objects.all().exclude(username = userobj)):
+                #     # user follows all (except itself)
 
-                    user_can_follow = 0
+                #     user_can_follow = 0
 
-                    ids = Follow.objects.values_list('following',flat= True).filter(follower = userobj.id)
-                    user_currently_follows = list(User.objects.filter(id__in = set(ids)).values('id','username'))
+                #     ids = Follow.objects.values_list('following',flat= True).filter(follower = userobj.id)
+                #     user_currently_follows = list(User.objects.filter(id__in = set(ids)).values('id','username'))
   
-                else :
-                    # user follows some
+                # else :
+                #     # user follows some
                 
-                    user_currently_follow_ids = Follow.objects.values_list('following',flat= True).filter(follower = userobj.id)
+                #     user_currently_follow_ids = Follow.objects.values_list('following',flat= True).filter(follower = userobj.id)
                     
-                    user_currently_follows = list(User.objects.filter(id__in = set(user_currently_follow_ids)).values('id','username'))
-                    user_can_follow = list(User.objects.all().exclude(username = userobj).exclude(id__in = set(user_currently_follow_ids)).values('id','username'))
+                #     user_currently_follows = list(User.objects.filter(id__in = set(user_currently_follow_ids)).values('id','username'))
+                #     user_can_follow = list(User.objects.all().exclude(username = userobj).exclude(id__in = set(user_currently_follow_ids)).values('id','username'))
                 
+                user_currently_follows,user_can_follow = util.get_user_networks(request.user.username)
                 # dictonary to store results
+                if user_currently_follows == 0:
+                    user_currently_follows = 0
+                else:
+                    user_currently_follows =list(user_currently_follows)
+
+                if user_can_follow == 0:
+                    user_can_follow = 0
+                else:
+                    user_can_follow =list(user_can_follow)    
+               
+                print(user_currently_follows,user_can_follow)
                 result = dict({"user_currently_follows":user_currently_follows,"user_can_follow":user_can_follow})
 
                 
@@ -313,8 +325,8 @@ def section(request,user,category):
             elif category == "likes":
                 # get user's liked post
                 post_liked = list(get_myliked_post(request))
-                post_liked_user_ids = list(get_myliked_post(request).values_list("user_id",flat= True))
 
+                post_liked_user_ids = list(get_myliked_post(request).values_list("user_id",flat= True))
                 post_liked_user_id_and_username = User.objects.filter(id__in = set(post_liked_user_ids)).values_list("id","username")
                 post_liked_user_id_and_username = dict(post_liked_user_id_and_username)
               
@@ -380,10 +392,12 @@ def connect(request,user=""):
                 instance.following.set(userTobe)
         else:
             print("Form not valid",form.errors)
-
+        path = "network:profile/"+request.user.username+"/networks/"
+        print("path",path)
         if profile_args:
             return HttpResponseRedirect(reverse('network:profile',kwargs={'user':user}))
-        return HttpResponseRedirect(reverse('network:profile'))
+        return redirect('network:profile')
+        #return HttpResponseRedirect(reverse('network:profile'))
         
         
     else:
@@ -597,9 +611,70 @@ def delete_post(request,post_id):
     1. delete given postid from db
     
     """
-    
-    if (util.delete_post(post_id)):
-        return HttpResponse(status =200)
-    
-    return HttpResponse(status = 400 )
+    if request.user.is_authenticated:
+        if (util.delete_post(post_id)):
+            return HttpResponse(status =200)
+        
+        return HttpResponse(status = 400 )
+    else:
+        return HttpResponseRedirect(reverse("network:login"))
+
+def network(request,request_type):
+    """
+    1. return user follow and following list with dictonary
+    """
+    print("network",request_type)
+    if request.user.is_authenticated:
+        return  render(request,"network/network.html",{
+        "request_type":request_type,
+   
+    })
+        
+    else:
+        return HttpResponseRedirect(reverse("network:login"))
+
+def network_section(request,section):
+    print("network section",section)
+    if request.user.is_authenticated:
+        #follow and following information
+        following,suggestion = util.get_user_networks(request.user.username)
+        
+        #follower information
+        follower_ids = util.get_follower_ids(request.user.username)
+
+        #followers list that current user is following back
+        if follower_ids !=0 and following !=0:
+            following_back = following.filter(id__in = set(follower_ids))
+        following_back = 0
+        #follower's id with name
+        followers = User.objects.filter(id__in = set(follower_ids)).values("id","username")
+        
+        if following == 0:
+            following = 0
+        else:
+            following = list(following)
+
+        if suggestion == 0:
+            suggestion = 0
+        else:
+            suggestion = list(suggestion)
+        
+        if followers == 0:
+            followers = 0
+        else:
+            followers = list(followers)
+
+        if following_back == 0:
+            following_back = 0
+        else:
+            following_back = list(following_back)      
+        
+        result = dict({"following":following,"suggestions":suggestion,"followers":followers,"following_back":following_back})
+        print("RESULT",result)
+        response = json.dumps(result,default=str)
+
+        return HttpResponse(response,content_type = "application/json")
+ 
+
+
     

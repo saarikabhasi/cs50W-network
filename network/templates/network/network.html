@@ -1,0 +1,53 @@
+{% extends "network/layout.html" %}
+
+{% block title %}
+    Network
+{% endblock %}
+{%load static %}
+
+{% block body %}
+<script>
+    const initialsection = "{{request_type}}"
+</script>
+<div class="network">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light flex-row d-flex bd-highlight mb-3" id ="mini-nav">
+        <ul class="navbar-nav">
+            <li class="nav-item ">
+    
+                <button  id ="button" class ="nav-link active" data-section="followers" >Followers </button>
+            </li>
+            <li class="nav-item">
+    
+                <button  id ="button" class ="nav-link" data-section="following">Following</button>
+            </li>
+            <li class="nav-item">
+                
+                <button  id ="button" class ="nav-link" data-section="suggestions">Suggestions</button>
+            </li>
+        </ul>
+    </nav>
+    <section >
+    
+        <div class ="message">
+
+        </div>
+        
+
+        <section>
+            <article id ="result">
+                
+            </article>
+        </section>
+    
+
+                
+</section>
+
+</div>
+<script type ="text/javascript" src="{% static 'util.js' %}"></script>
+<script type ="text/javascript" src="{% static 'network.js' %}"></script>
+
+
+     
+{% endblock %}

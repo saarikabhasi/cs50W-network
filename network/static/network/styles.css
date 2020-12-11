@@ -171,9 +171,10 @@ div#signIn{
 button.btn-primary{
     font-size: 1.4rem;
     color:#092834;
-    background-color: transparent;
-    text-decoration: underline;
+    background-color: rgb(243, 243, 243);
+    text-decoration: none;
     border: none;   
+
    
 }
 button.btn-primary:hover{
@@ -227,9 +228,9 @@ h4.like{
     font-size: 1.2rem;
 }
 .hr_divide_heading{
-    border: 1px dotted #c2d4dd; 
+    
     /* border-radius: 100px; */
-    /* width: 100%; */
+    width: 100%;
 }
 
 
@@ -267,6 +268,7 @@ button#edit:hover{
     clear:both;
     margin-left: 15%;
     margin-top: 1rem;
+    color:rgb(8, 154, 202);
     /* float: center; */
     /* left: 10%;
     right: 10%; */
@@ -278,6 +280,7 @@ button#edit:hover{
     font-size: 1.5rem;
     margin-bottom: 2rem;
     text-align: center;
+    color:rgb(8, 154, 202);
 
 }
 #newpost-div button{
@@ -285,18 +288,20 @@ button#edit:hover{
     float: left;
     position: relative;
     top: 0rem;
-    margin-left: 50%;
+    margin-left: 48%;
     margin-top: 1rem;
 
 
 }
 #newpost-div .btn-primary{
-    background-color:rgb(8, 154, 202)!important;
-    color: rgb(255, 255, 255) !important;
+    background-color:rgb(242, 245, 247)!important;
+    color: rgb(8, 154, 202) !important;
     text-decoration: none;
 }
 #newpost-div .btn-primary:hover{
-    text-decoration: underline;
+    text-decoration: none;
+    color: white !important;
+    background-color:rgb(8, 154, 202)!important;
 }
 #profile-nav h1{
     font-size: 1.8rem;
@@ -307,4 +312,19 @@ button#edit:hover{
     font-size: 1.5rem;
     text-align:center;
     text-transform: capitalize !important;
+}
+/* network */
+.flex-container {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    background-color: none;
+    justify-content: space-between;
+    align-items: baseline;
+ 
+    
+  }
+span.form input{
+    background-color: rgb(182, 175, 182);
+    border: none;
 }

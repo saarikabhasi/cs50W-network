@@ -10,7 +10,7 @@ from .models import User
 class NewPostForm(forms.Form):
     # user_id = forms(queryset=User)
     contents =forms.CharField(label="",required= False, widget= forms.Textarea
-    (attrs={'placeholder':'Starting writing here...','class':'col-sm','style':'top:1rem,margin:10rem'}))
+    (attrs={'placeholder':'Whats on your mind?','class':'col-sm','style':'top:1rem,margin:10rem'}))
 
 class EditPostForm(forms.Form):
     contents =forms.CharField(label="",required= False, widget= forms.Textarea

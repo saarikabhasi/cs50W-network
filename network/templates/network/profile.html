@@ -24,8 +24,8 @@
         <div><span id ="connect"></span></div>
         <div class ="follow">
            
-                <span id = "following_count">{{following_count}}  Following  </span> 
-                <span id = "follower_count">{{follower_count}} Followers</span>
+                <span ><a href = "{% url 'network:network' request_type='following' %}" id = "following_count" >{{following_count}}  Following</a>  </span> 
+                <span ><a href = "{% url 'network:network' request_type='followers' %}" id = "follower_count" >{{follower_count}} Followers</a></span>
               
         </div>
         <hr>
