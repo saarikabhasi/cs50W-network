@@ -5,7 +5,7 @@ function setup_result(display){
 }
 
 //MYPOSTs and MYLIKES
-function setup_post_groups(val,result="",display){
+function setup_post_groups(val,result="",display,cardCreated=false){
 
     user_id = val["id"]
   
@@ -60,7 +60,8 @@ function setup_post_groups(val,result="",display){
     let like_count = createElement('h4',null,`num_likes_${user_id}`,`${String(number_of_likes)} like(s)`);
     
     let likebutton =0
-    if ((parseInt (number_of_likes)> 0 ) && (result["post_liked_ids"].length >0) && (result["post_liked_ids"].includes(user_id))){
+    
+    if ((parseInt (number_of_likes)> 0 ) && ("post_liked_ids" in result) &&(result["post_liked_ids"].length >0) && (result["post_liked_ids"].includes(user_id))){
         likebutton = createButton(null,"like",null,null,user_id,'<i class="fa fa-heart" style = "color:#f7786b">') 
         
     } 
@@ -76,9 +77,18 @@ function setup_post_groups(val,result="",display){
         appendChild(parent = span,poster,post,Date_time,like_count,likebutton);
     }
     
-    appendChild(parent = card,span);
+    if (!cardCreated){
+        //no need to created outer div while editing a post. 
+        appendChild(parent = card,span);
+        appendChild(parent =display,card);
+    }
+    else{
+        appendChild(parent = display,span);
+    }
+   
     
-    appendChild(parent =display,card);
+
+    console.log(display)
     return display
 }
 

@@ -117,10 +117,9 @@
 
             document.querySelector("#following_count").innerHTML = `${result["following_count"]} Following`
             document.querySelector("#follower_count").innerHTML = `${result["follower_count"]} Follower`    
-            document.querySelector("#result").innerHTML = display.innerHTML;   
             
+            setup_result(display);
             setup_connect_to_networks_button();
-            
             setup_color_for_following_buttons();
             likefeature();
             

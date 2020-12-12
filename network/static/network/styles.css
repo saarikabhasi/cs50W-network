@@ -321,6 +321,7 @@ button#edit:hover{
     background-color: none;
     justify-content: space-between;
     align-items: baseline;
+    width: 100%;
  
     
   }
