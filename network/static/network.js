@@ -4,13 +4,17 @@
 
 window.onpopstate = function(event) {
     //remember section when clicking previous 
-    showSection(event.state.section);
+    //showSection(event.state.section);
 }
 
 function showSection(section){
     console.log("Show section for",section)
     //find section from server
-    path =`section/${section}`
+    console.log("network_section_for_user",network_section_for_user)
+
+    path =`section/${section}/${network_section_for_user}`
+
+    console.log("path:",path)
     fetch(path)
     .then(response => response.text())
     .then(text => {
@@ -48,7 +52,7 @@ function showSection(section){
     
 window.onload = function(){
     
-    window.history.pushState({section:initialsection},"",`${initialsection}`);
+   // window.history.pushState({section:initialsection},"",`${initialsection}`);
     console.log("show",`${initialsection}`)
     showSection(initialsection);
 }
@@ -59,7 +63,7 @@ document.addEventListener('DOMContentLoaded',function(){
     document.querySelectorAll('#button').forEach(button =>{
         button.onclick = function(){
             let section = this.dataset.section
-            window.history.pushState({section:section},"",`${section}`);
+            // window.history.pushState({section:section},"",`${section}`);
             showSection(section);
 
             var current = document.getElementsByClassName("active");    
