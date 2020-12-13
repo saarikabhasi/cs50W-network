@@ -8,6 +8,20 @@
 {% block body %}
 <script>
     const initialsection = "{{request_type}}"
+    
+    
+    let network_section_for_user = "{{name}}"
+    
+
+    if (network_section_for_user == ""){
+        console.log("network_section_for_user is NULL" )
+
+        network_section_for_user = username
+    
+    }
+    console.log(`netweok.html ${network_section_for_user}`)
+
+    
 </script>
 <div class="network">
 

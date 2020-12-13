@@ -10,7 +10,7 @@
         <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
     </head>
     <body>
-        
+
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light flex-row d-flex bd-highlight mb-3" id="main-nav">
             <a class="navbar-brand text-monospace" id = "logo" href="{% url 'network:index' %}">Network</a>
@@ -50,9 +50,8 @@
 
            <script>
                var csrfToken = "{{csrf_token}}"
-
-           </script> 
-
+                const username ="{{ user.username }}"
+        </script>
             {% block body %}
             {% endblock %}
         </div>

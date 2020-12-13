@@ -19,8 +19,9 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     let card =createElement('div',"card",`eachpost_${user_id}`,null);
     let span = createElement('span',null,null,null);
 
-
     
+    console.log("val",val)
+    console.log("result",result)
  
     if ("user_id_id" in val && "post_liked_user_id_and_username" in result){
         //only for mylikes 
@@ -43,6 +44,7 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     }
 
     let poster = createElement('h2',"card-title","post_userid",null);
+    console.log("poster name",post_username)
     poster.innerHTML = post_username
         
 
@@ -112,24 +114,24 @@ function setup_network_groups(val,result="",section="",display){
 
     var form = createForm("post",loc)
     var crsf = formCrsf();
-    var togglebutton = createElement('span','form',null,null)
-    appendChild(parent=form,crsf,togglebutton)
+    var togglebuttonFolloworUnfollow = createElement('span','form',null,null)
+    appendChild(parent=form,crsf,togglebuttonFolloworUnfollow)
 
     let hr = createElement('hr','hr_divide_heading',null,null,null)
 
             
     //unfollow
     if (section === "following"){
-        togglebutton.innerHTML = following
+        togglebuttonFolloworUnfollow.innerHTML = following
         
     }
     //followers
     if (section === "followers"){
-
+        console.log(result)
         
         if ( typeof result["following_back"] == "number" || result["following_back"].length<=0){
             // user doesnt follow any of followers so follow all 
-            togglebutton.innerHTML = follow
+            togglebuttonFolloworUnfollow.innerHTML = follow
             
         }
 
@@ -137,11 +139,11 @@ function setup_network_groups(val,result="",section="",display){
             // unfollow if user does not follow these followers back
             if(user_id == result["following_back"][j]["id"]){
                 //following
-                togglebutton.innerHTML = following
+                togglebuttonFolloworUnfollow.innerHTML = following
             }
             else{
                 //follow
-                togglebutton.innerHTML = follow
+                togglebuttonFolloworUnfollow.innerHTML = follow
             }
 
         }
@@ -149,10 +151,32 @@ function setup_network_groups(val,result="",section="",display){
         
         
     }
+    if (section === "followers_you_know"){
+        
+        if (typeof result["followers_you_know"] == "number" || result["followers_you_know"].length<=0){
+            // user doesnt follow any of followers so follow all 
+            togglebuttonFolloworUnfollow.innerHTML = ""
+            
+        }
+        for (let j=0;j<result["followers_you_know"].length;j++){
+            // unfollow if user does not follow these followers back
+            if(user_id == result["followers_you_know"][j]["id"]){
+                //following
+                togglebuttonFolloworUnfollow.innerHTML = following
+            }
+            else{
+                //follow
+                togglebuttonFolloworUnfollow.innerHTML = follow
+            }
+
+        }
+
+
+    }
     //suggestions
     if (section === "suggestions"){
         //follow 
-        togglebutton.innerHTML = follow
+        togglebuttonFolloworUnfollow.innerHTML = follow
     }
 
 

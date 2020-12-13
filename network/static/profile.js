@@ -136,7 +136,7 @@
         // by default show myposts
 
         let section = "myposts"
-        // let section = "mylikes"
+        
         window.history.pushState({section:section},"",`${section}`);
         
         showSection(section);

@@ -343,7 +343,7 @@ def section(request,user,category):
         result.update(follow)
         # generate response as string
         response = json.dumps(result,default=str)
-        print("RESO",response)
+        
         
         return HttpResponse(response,content_type = "application/json")
     else:
@@ -600,7 +600,7 @@ def save_post(request,post_id,content):
 
         result = {"result":list(postobj)}
         response = json.dumps(result,default=str)
-
+        print("RESp",response)
         return HttpResponse(response,content_type = "application/json")
 
     else:
@@ -621,36 +621,92 @@ def delete_post(request,post_id):
     else:
         return HttpResponseRedirect(reverse("network:login"))
 
-def network(request,request_type):
+def network(request,request_type,user=""):
     """
     1. return user follow and following list with dictonary
     """
-    print("network",request_type)
+    print("network")
+    print("args")
+    print("type:",request_type,"\nuser:",user)
     if request.user.is_authenticated:
-        return  render(request,"network/network.html",{
-        "request_type":request_type,
-   
-    })
+        if user :
+
+            if request.user.is_authenticated:
+                return  render(request,"network/network.html",{
+                "request_type":request_type,
+                "name":user,
+        
+            })
+        else:
+            if request.user.is_authenticated:
+                return  render(request,"network/network.html",{
+                "request_type":request_type,
+                
+            })
+
         
     else:
         return HttpResponseRedirect(reverse("network:login"))
 
-def network_section(request,section):
-    print("network section",section)
+def network_section(request,section,user =""):
+    print("network_section")
+    print("args\n","section:",section,"\nuser:",user)
+
+    """
+    1. get following and followers information
+    2. handles request by, 
+        i. current user checking on their own profile(show current user follow details)
+        ii. current user checking other user profile(show other user follow details with followers user know)
+    3. returns response with four important variables:
+        i. following, followers, suggestions and following_back (user checking on their profile)
+        ii. following, followers, suggestions and followers_you_know (user checking on other user profile) 
+    """
     if request.user.is_authenticated:
+
+
         #follow and following information
-        following,suggestion = util.get_user_networks(request.user.username)
+ 
+        # following,suggestion and followers are common when checking any profile
+        # following_back - for current user checking on their own  profile
+        # followers_you_know -for current user checking on other user profile
+
+        username_network_tofind = request.user.username
+        if user:
+            #get network info of other user
+            username_network_tofind = user
+        
+        following,suggestion = util.get_user_networks(username_network_tofind)
         
         #follower information
-        follower_ids = util.get_follower_ids(request.user.username)
+        follower_ids = util.get_follower_ids(username_network_tofind)
 
-        #followers list that current user is following back
         if follower_ids !=0 and following !=0:
-            following_back = following.filter(id__in = set(follower_ids))
-        following_back = 0
+            if user =="":
+                #following_back
+                following_back = following.filter(id__in = set(follower_ids))
+                if following_back == 0:
+                    following_back = 0
+                else:
+                    following_back = list(following_back)  
+            else:
+                #followers_you_know
+                youfollow,_ =  util.get_user_networks(request.user.username)
+                followers_you_know = youfollow.filter(id__in = set(follower_ids))
+                if followers_you_know == 0:
+                    followers_you_know = 0
+                else:
+                    followers_you_know = list(followers_you_know)  
+       
+            
+           
+
+
+
         #follower's id with name
         followers = User.objects.filter(id__in = set(follower_ids)).values("id","username")
-        
+    
+
+
         if following == 0:
             following = 0
         else:
@@ -666,12 +722,19 @@ def network_section(request,section):
         else:
             followers = list(followers)
 
-        if following_back == 0:
-            following_back = 0
-        else:
-            following_back = list(following_back)      
+       
+             
+
         
-        result = dict({"following":following,"suggestions":suggestion,"followers":followers,"following_back":following_back})
+              
+        
+
+        result = dict({"following":following,"suggestions":suggestion,"followers":followers})
+        if user =="":
+            result["following_back"] = following_back
+        else:
+            result["followers_you_know"] = followers_you_know
+
         print("RESULT",result)
         response = json.dumps(result,default=str)
 

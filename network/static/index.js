@@ -36,9 +36,13 @@ function updatelike(ele){
     
         
 }
-// call likefeature function when page is loaded
 
+document.addEventListener('DOMContentLoaded',function(){
+    // call likefeature function when page is loaded 
+   
     likefeature();
+})
+    
     
     
 
@@ -76,7 +80,7 @@ function edit_post(postId,post_username){
         result = JSON.parse(text)
         content = result["contents"]
     
-        let onclickfunc = `save_post(${postId},"${post_username}")`
+        let onclickfunc = `save_post(${postId})`
 
         let user_id = createElement('h5',null,"post_userid",String(`${post_username}`));
         var textArea =  createTextarea("10","60",`textarea_${postId}`,"editpost",content,null)
@@ -93,7 +97,7 @@ function edit_post(postId,post_username){
 
 }
 
-function save_post(postId,post_username){
+function save_post(postId){
     // save post with new content
     
     textarea = document.getElementById(`textarea_${postId}`)

@@ -13,25 +13,26 @@
     2. user can like any post 
     3. user can edit their own post -->
 
-<script>
-    const username ="{{username}}"
-</script>
+    <script>
+        const username ="{{username}}"
+    </script>
 
 <script type ="text/javascript" src="{% static 'util.js' %}"></script>
 <div id = "profile">
     <div id ="profile-nav">
         <h1>{{username}}</h1>
         <div><span id ="connect"></span></div>
-        <div class ="follow">
-           
-                <span ><a href = "{% url 'network:network' request_type='following' %}" id = "following_count" >{{following_count}}  Following</a>  </span> 
-                <span ><a href = "{% url 'network:network' request_type='followers' %}" id = "follower_count" >{{follower_count}} Followers</a></span>
-              
-        </div>
-        <hr>
+
 
 {% if page_info == "current user" %}
-        <!-- profile page of logged in user -->
+        <div class ="follow">
+                    
+            <span ><a href = "{% url 'network:network' request_type='following' %}" id = "following_count" >{{following_count}}  Following</a>  </span> 
+            <span ><a href = "{% url 'network:network' request_type='followers' %}" id = "follower_count" >{{follower_count}} Followers</a></span>
+        
+        </div>
+        <hr>
+                <!-- profile page of logged in user -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light flex-row d-flex bd-highlight mb-3" id ="mini-nav">
             <ul class="navbar-nav">
                 <li class="nav-item ">
@@ -67,6 +68,13 @@
 
 
 {% else %}
+<div class ="follow">
+            
+    <span ><a href = "{% url 'network:network' request_type='following' user=username %}" id = "following_count" >{{following_count}}  Following</a>  </span> 
+    <span ><a href = "{% url 'network:network' request_type='followers' user=username%}" id = "follower_count" >{{follower_count}} Followers</a></span>
+  
+</div>
+<hr>
 <!-- profile page of other user -->
 <section >
     <article class = "other_profile">
