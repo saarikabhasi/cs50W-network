@@ -24,14 +24,6 @@
         <div><span id ="connect"></span></div>
 
 
-<<<<<<< HEAD
-{% if page_info == "current user" %}
-        <div class ="follow">
-                    
-            <span ><a href = "{% url 'network:network' request_type='following' %}" id = "following_count" >{{following_count}}  Following</a>  </span> 
-            <span ><a href = "{% url 'network:network' request_type='followers' %}" id = "follower_count" >{{follower_count}} Followers</a></span>
-        
-=======
 
 {% if page_info == "current user" %}
         
@@ -40,8 +32,8 @@
             <span ><a href = "{% url 'network:network' request_type='following' %}" id = "following_count" >{{following_count}}  Following</a>  </span> 
             <span ><a href = "{% url 'network:network' request_type='followers' %}" id = "follower_count" >{{follower_count}} Followers</a></span>
 
->>>>>>> ca25794... final before test
         </div>
+    </div>
         <hr>
                 <!-- profile page of logged in user -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light flex-row d-flex bd-highlight mb-3" id ="mini-nav">
@@ -71,7 +63,7 @@
 
 
 
-</div>
+
 <script type ="text/javascript" src="{% static 'functions.js' %}"></script>
 <script type ="text/javascript" src="{% static 'profile.js' %}"></script>
 
@@ -79,77 +71,73 @@
 
 
 {% else %}
-<div class ="follow">
-            
-<<<<<<< HEAD
-    <span ><a href = "{% url 'network:network' request_type='following' user=username %}" id = "following_count" >{{following_count}}  Following</a>  </span> 
-    <span ><a href = "{% url 'network:network' request_type='followers' user=username%}" id = "follower_count" >{{follower_count}} Followers</a></span>
-=======
-    <span ><a id = "following_count" >{{following_count}}  Following</a>  </span> 
-    <span ><a id = "follower_count" >{{follower_count}} Followers</a></span>
->>>>>>> ca25794... final before test
-  
-</div>
-<hr>
-<!-- profile page of other user -->
-<section >
-    <article class = "other_profile">
-        <div class ="message">
-
-        </div>
-
-        
-        <div id ="showposts"> 
-            {% for post in posts %}
-
-                <!-- <hr class="hr_divide_heading">   -->
-                <div class = "card" id= "post">
-                    <span>
-                        <h2 id ="post_userid" class="card-title">{{post.user_id}}</h2>
-                        <h3 id ="post_content">{{post.contents}}</h3>
-                        <h4 id ="post_dateandtime">{{post.date_and_time}}</h4>
-                        <h4 class='like'>{{post.num_of_likes}}</h4>
-                        {% if post.num_of_likes > 0 and post_liked_ids|length  and post.id in post_liked_ids %}
+        <div class ="follow">
                     
-
-                            <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:#f7786b"></i></a>
-
-                        {% else %}
-                            <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:#b0aac0"></i></a>
-                        
-                        {% endif %}
-                    </span>
-                </div>
-                {% empty %}
-    
-                <h5>No posts</h5>
-            {% endfor %}
-        </div>
-    </article>
-
-</section>
-<script>
-    // follow or unfollow option while displaying other user profile
-
-    connect =  "{{connect}}"
-    user_id = "{{other_user_id}}"
-    
-    loc ="{% url 'network:connect' user=username  %}"
-    var form = createForm("post",loc)
-    var crsf = formCrsf();
- 
-    if (connect == "following"){
-        var togglebutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value ='+user_id+' /> <input type= "submit"  name = "btn"  value =  unfollow />')
-        }
-        else{
-        var togglebutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value ='+user_id+' /> <input type= "submit"  name = "btn"  value =  follow />')
-        }
+            <span ><a id = "following_count" >{{following_count}}  Following</a>  </span> 
+            <span ><a id = "follower_count" >{{follower_count}} Followers</a></span>
         
-    appendChild(parent =form,crsf,togglebutton);
-    document.querySelector("#connect").appendChild(form)
+        </div>
+    </div>
+    <hr>
+    <!-- profile page of other user -->
+    <section >
+        <article class = "other_profile">
+            <div class ="message">
+
+            </div>
+
+            
+            <div id ="showposts"> 
+                {% for post in posts %}
+
+                    <!-- <hr class="hr_divide_heading">   -->
+                    <div class = "card" id= "post">
+                        <span>
+                            <h2 id ="post_userid" class="card-title">{{post.user_id}}</h2>
+                            <h3 id ="post_content">{{post.contents}}</h3>
+                            <h4 id ="post_dateandtime">{{post.date_and_time}}</h4>
+                            <h4 class='like'>{{post.num_of_likes}}</h4>
+                            {% if post.num_of_likes > 0 and post_liked_ids|length  and post.id in post_liked_ids %}
+                        
+
+                                <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:#f7786b"></i></a>
+
+                            {% else %}
+                                <a id ="like" href = "" data-section = "{{post.id}}"><i class="fa fa-heart" style = "color:#b0aac0"></i></a>
+                            
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% empty %}
+        
+                    <h5>No posts</h5>
+                {% endfor %}
+            </div>
+        </article>
+
+    </section>
+    <script>
+        // follow or unfollow option while displaying other user profile
+
+        connect =  "{{connect}}"
+        user_id = "{{other_user_id}}"
+        
+        loc ="{% url 'network:connect' user=username  %}"
+        var form = createForm("post",loc)
+        var crsf = formCrsf();
     
-  
-</script>
+        if (connect == "following"){
+            var togglebutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value ='+user_id+' /> <input type= "submit"  name = "btn"  value =  unfollow />')
+            }
+            else{
+            var togglebutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value ='+user_id+' /> <input type= "submit"  name = "btn"  value =  follow />')
+            }
+            
+        appendChild(parent =form,crsf,togglebutton);
+        document.querySelector("#connect").appendChild(form)
+        
+    
+    </script>
 {% endif %}
 
 

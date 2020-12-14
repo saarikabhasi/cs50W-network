@@ -621,143 +621,68 @@ def delete_post(request,post_id):
     else:
         return HttpResponseRedirect(reverse("network:login"))
 
-def network(request,request_type,user=""):
+def network(request,request_type):
     """
     1. return user follow and following list with dictonary
     """
     print("network")
     print("args")
-<<<<<<< HEAD
-    print("type:",request_type,"\nuser:",user)
-    if request.user.is_authenticated:
-        if user :
 
-            if request.user.is_authenticated:
-                return  render(request,"network/network.html",{
-                "request_type":request_type,
-                "name":user,
+    if request.user.is_authenticated:
+    
+        return  render(request,"network/network.html",{
+        "request_type":request_type,
         
-            })
-        else:
-            if request.user.is_authenticated:
-                return  render(request,"network/network.html",{
-                "request_type":request_type,
-                
-            })
-=======
-    print("type:",request_type)
-    if request.user.is_authenticated:
-
-        if request.user.is_authenticated:
-            return  render(request,"network/network.html",{
-            "request_type":request_type,
-            
         })
->>>>>>> ca25794... final before test
-
-        
+   
     else:
         return HttpResponseRedirect(reverse("network:login"))
 
-<<<<<<< HEAD
-def network_section(request,section,user =""):
-    print("network_section")
-    print("args\n","section:",section,"\nuser:",user)
-=======
 def network_section(request,section):
     print("network_section")
     print("args\n","section:",section)
->>>>>>> ca25794... final before test
 
     """
     1. get following and followers information
     2. handles request by, 
         i. current user checking on their own profile(show current user follow details)
-<<<<<<< HEAD
-        ii. current user checking other user profile(show other user follow details with followers user know)
-    3. returns response with four important variables:
-        i. following, followers, suggestions and following_back (user checking on their profile)
-        ii. following, followers, suggestions and followers_you_know (user checking on other user profile) 
-=======
         
     3. returns response with four important variables:
         i. following, followers, suggestions and following_back (user checking on their profile)
        
->>>>>>> ca25794... final before test
     """
     if request.user.is_authenticated:
 
 
         #follow and following information
-<<<<<<< HEAD
- 
-        # following,suggestion and followers are common when checking any profile
-        # following_back - for current user checking on their own  profile
-        # followers_you_know -for current user checking on other user profile
-
-        username_network_tofind = request.user.username
-        if user:
-            #get network info of other user
-            username_network_tofind = user
-=======
-        result =dict()
-        username_network_tofind = request.user.username
->>>>>>> ca25794... final before test
         
+        username_network_tofind = request.user.username
+        following_back = 0
+
         following,suggestion = util.get_user_networks(username_network_tofind)
         
         if suggestion == 0:
             suggestion = 0
         else:
             suggestion = list(suggestion)
-        result["suggestions"]= suggestion
+        
         #follower information
         follower_ids = util.get_follower_ids(username_network_tofind)
 
         if follower_ids !=0 and following !=0:
-<<<<<<< HEAD
-            if user =="":
-                #following_back
-                following_back = following.filter(id__in = set(follower_ids))
-                if following_back == 0:
-                    following_back = 0
-                else:
-                    following_back = list(following_back)  
-            else:
-                #followers_you_know
-                youfollow,_ =  util.get_user_networks(request.user.username)
-                followers_you_know = youfollow.filter(id__in = set(follower_ids))
-                if followers_you_know == 0:
-                    followers_you_know = 0
-                else:
-                    followers_you_know = list(followers_you_know)  
-       
-            
-           
-
-
-
-        #follower's id with name
-        followers = User.objects.filter(id__in = set(follower_ids)).values("id","username")
-    
-
-=======
 
             #following_back - for current user checking on their own  profile
             following_back = following.filter(id__in = set(follower_ids))
 
-            if following_back == 0:
-                following_back = 0
-            else:
+            if following_back != 0:
                 following_back = list(following_back)  
-            result["following_back"] = following_back
->>>>>>> ca25794... final before test
+            
 
         if following == 0:
             following = 0
         else:
             following = list(following)
-        result["following"]= following
+        
         #follower's id with name
         followers = User.objects.filter(id__in = set(follower_ids)).values("id","username")
     
@@ -765,22 +690,7 @@ def network_section(request,section):
             followers = 0
         else:
             followers = list(followers)
-<<<<<<< HEAD
-
-       
-             
-
         
-              
-        
-
-        result = dict({"following":following,"suggestions":suggestion,"followers":followers})
-        if user =="":
-            result["following_back"] = following_back
-        else:
-            result["followers_you_know"] = followers_you_know
-=======
-        result["followers"]=followers
         
        
         
@@ -788,8 +698,7 @@ def network_section(request,section):
         
         
             
->>>>>>> ca25794... final before test
-
+        result = dict({"following":following,"suggestions":suggestion,"followers":followers,"following_back": following_back})
         print("RESULT",result)
         response = json.dumps(result,default=str)
 

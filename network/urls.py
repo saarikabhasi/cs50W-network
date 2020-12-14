@@ -17,15 +17,9 @@ urlpatterns = [
     path("profile/<str:user>/<str:category>",views.section,name="section"),
 
     path("network/<str:request_type>",views.network,name="network"),
-<<<<<<< HEAD
-    path("network/<str:request_type>/<str:user>",views.network,name="network"),
-    # path("network/section/<str:section>",views.network_section,name="network_section"),
-    path("network/section/<str:section>/<str:user>",views.network_section,name="network_section"),
-
-=======
     path("network/section/<str:section>",views.network_section,name="network_section"),
    
->>>>>>> ca25794... final before test
+
     path("editpost/<int:post_id>",views.edit_post,name="editpost"),
     path("savepost/<int:post_id>/<str:content>",views.save_post,name="save_post"),
     # path("savepost/<int:post_id>/",views.save_post,name="save_post"),
