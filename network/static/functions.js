@@ -194,9 +194,10 @@ function setup_message_groups(message,key,display){
     //setup not found message
     let div =createElement('div',null,null,null);
     let span = createElement('span',null,null,null);
-    
+
     let username = createElement('h2',"notfound text-center",null,`${message[key]}`)
-    appendChild(parent =div,span,username )
+    console.log("message",message,"key",key,"display",display)
+    appendChild(parent =div,span,username)
     appendChild(parent =display,div);
     return display
 }

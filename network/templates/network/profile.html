@@ -24,12 +24,23 @@
         <div><span id ="connect"></span></div>
 
 
+<<<<<<< HEAD
 {% if page_info == "current user" %}
         <div class ="follow">
                     
             <span ><a href = "{% url 'network:network' request_type='following' %}" id = "following_count" >{{following_count}}  Following</a>  </span> 
             <span ><a href = "{% url 'network:network' request_type='followers' %}" id = "follower_count" >{{follower_count}} Followers</a></span>
         
+=======
+
+{% if page_info == "current user" %}
+        
+        <div class ="follow">
+                            
+            <span ><a href = "{% url 'network:network' request_type='following' %}" id = "following_count" >{{following_count}}  Following</a>  </span> 
+            <span ><a href = "{% url 'network:network' request_type='followers' %}" id = "follower_count" >{{follower_count}} Followers</a></span>
+
+>>>>>>> ca25794... final before test
         </div>
         <hr>
                 <!-- profile page of logged in user -->
@@ -70,8 +81,13 @@
 {% else %}
 <div class ="follow">
             
+<<<<<<< HEAD
     <span ><a href = "{% url 'network:network' request_type='following' user=username %}" id = "following_count" >{{following_count}}  Following</a>  </span> 
     <span ><a href = "{% url 'network:network' request_type='followers' user=username%}" id = "follower_count" >{{follower_count}} Followers</a></span>
+=======
+    <span ><a id = "following_count" >{{following_count}}  Following</a>  </span> 
+    <span ><a id = "follower_count" >{{follower_count}} Followers</a></span>
+>>>>>>> ca25794... final before test
   
 </div>
 <hr>

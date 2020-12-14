@@ -64,7 +64,7 @@
 
             if (section =="networks"){
                 //networks
-                var message = {"common":"No networks"}
+                // var message = {"common":"No networks"}
                 const keys = ["following","suggestions"]
                 keys.forEach (key=>{
                     networks= result[key]
@@ -73,9 +73,9 @@
                             display = setup_network_groups(networks[i],null,key,display);
                         }
                     }
-                    else{
-                        display = setup_message_groups(message,"common",display)
-                    }
+                    // else{
+                    //     display = setup_message_groups(message,"common",display)
+                    // }
 
                 })
                 

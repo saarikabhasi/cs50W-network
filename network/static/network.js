@@ -10,9 +10,13 @@ window.onpopstate = function(event) {
 function showSection(section){
     console.log("Show section for",section)
     //find section from server
+<<<<<<< HEAD
     console.log("network_section_for_user",network_section_for_user)
 
     path =`section/${section}/${network_section_for_user}`
+=======
+    path =`section/${section}`
+>>>>>>> ca25794... final before test
 
     console.log("path:",path)
     fetch(path)
@@ -36,7 +40,7 @@ function showSection(section){
                 }
             }
             else{
-                display = setup_message_groups(message,section)
+                display = setup_message_groups(message,section,display)
             }
         }
 
@@ -52,7 +56,11 @@ function showSection(section){
     
 window.onload = function(){
     
+<<<<<<< HEAD
    // window.history.pushState({section:initialsection},"",`${initialsection}`);
+=======
+   window.history.pushState({section:initialsection},"",`${initialsection}`);
+>>>>>>> ca25794... final before test
     console.log("show",`${initialsection}`)
     showSection(initialsection);
 }
