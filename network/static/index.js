@@ -84,7 +84,7 @@ function edit_post(postId,post_username){
 
         let user_id = createElement('h5',null,"post_userid",String(`${post_username}`));
         var textArea =  createTextarea("10","60",`textarea_${postId}`,"editpost",content,null)
-        var submitbutton = createElement('span',null,null,'<input type= "submit" id ="savepost" name = "btn" onclick='+onclickfunc+'>')
+        var submitbutton = createElement('span',null,null,'<input type= "submit" id ="savepost" class ="btn btn-primary" name = "btn" onclick='+onclickfunc+'>')
 
         appendChild(parent = display,user_id,textArea,submitbutton)
 

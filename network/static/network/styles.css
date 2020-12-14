@@ -210,6 +210,9 @@ button.btn-primary:hover{
 .fa-edit:hover{
     color: #77a8a8 !important;
 }
+.fa-trash:hover{
+    color: #77a8a8 !important;
+}
 h2#post_userid{
     color:black;
     font-size: 1.8rem;
@@ -248,18 +251,40 @@ button#like{
 
 }
 button#edit{
-    color:#f0efef;
+    /* color:#f0efef; */
     border:none;
     font-size: 25px;
     background-color:transparent;
     text-decoration: underline;
     float: right;
 }
-button#edit:hover{
-    color: black;
-    font-weight: bold;
+
+input[type=submit]#savepost{
+    font-size: 1.2rem;
+    background-color: rgb(243, 243, 243);
+    color: #000;
+    margin-top: 1rem;
     text-decoration: none;
+    border: none;
 }
+input[type=submit]#savepost:hover{
+    color: rgb(255, 255, 255);
+    background-color: rgb(8, 154, 202);
+    text-decoration: none;
+
+}
+
+button#delete{
+    /* color:#f0efef; */
+    border:none;
+    font-size: 25px;
+    background-color:transparent;
+    text-decoration: underline;
+    float: right;
+}
+
+
+
 /* newpost */
 #newpost-div textarea{
     width:70%;

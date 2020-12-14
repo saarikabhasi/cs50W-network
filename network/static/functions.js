@@ -6,17 +6,20 @@ function setup_result(display){
 
 //MYPOSTs and MYLIKES
 function setup_post_groups(val,result="",display,cardCreated=false){
-
-    user_id = val["id"]
-  
+    
+    post_id = val["id"]
+    
+    post_user_id = val["user_id_id"]
     post_content = val["contents"]
     post_date_and_time = val["date_and_time"]
     number_of_likes = val["num_of_likes"]
 
+
+    console.log("username",username)
     var post_username = username
     let edit_button = null
 
-    let card =createElement('div',"card",`eachpost_${user_id}`,null);
+    let card =createElement('div',"card",`eachpost_${post_id}`,null);
     let span = createElement('span',null,null,null);
 
     
@@ -26,7 +29,7 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     if ("user_id_id" in val && "post_liked_user_id_and_username" in result){
         //only for mylikes 
         if (val["user_id_id"] in result["post_liked_user_id_and_username"]){
-            post_username = result["post_liked_user_id_and_username"][val["user_id_id"]]
+            post_username = result["post_liked_user_id_and_username"][post_user_id]
         } 
         else{
             post_username = ""
@@ -38,9 +41,13 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     
     if (post_username.toLowerCase() == username.toLowerCase()){
         
-        edit_button = createButton('submit','edit',null,"edit",user_id,'<i class="fa fa-edit" style = "color:#f7786b"></i>')
-        edit_button.setAttribute('onclick',`edit_post(${user_id},"${post_username}")`)
-        
+        edit_button = createButton('submit','edit',null,"edit",post_id,'<i class="fa fa-edit" style = "color:#f7786b"></i>')
+        edit_button.setAttribute('onclick',`edit_post(${post_id},"${post_username}")`)
+
+        delete_button = createButton('submit','delete',null,'delete',`${post_id}`,'<i class="fa fa-trash" style = "color:#f7786b"></i>')
+        delete_button.setAttribute('onclick',`delete_post('${ post_id }')`)
+
+       
     }
 
     let poster = createElement('h2',"card-title","post_userid",null);
@@ -59,25 +66,33 @@ function setup_post_groups(val,result="",display,cardCreated=false){
    
     let post = createElement('h3',null,"post_content",String(post_content));
     let Date_time = createElement('h4',null,"post_dateandtime",String(new Date(post_date_and_time)));     
-    let like_count = createElement('h4',null,`num_likes_${user_id}`,`${String(number_of_likes)} like(s)`);
+    let like_count = createElement('h4',null,`num_likes_${post_id}`,`${String(number_of_likes)} like(s)`);
     
     let likebutton =0
     
-    if ((parseInt (number_of_likes)> 0 ) && ("post_liked_ids" in result) &&(result["post_liked_ids"].length >0) && (result["post_liked_ids"].includes(user_id))){
-        likebutton = createButton(null,"like",null,null,user_id,'<i class="fa fa-heart" style = "color:#f7786b">') 
+    if ((parseInt (number_of_likes)> 0 ) && ("post_liked_ids" in result) &&(result["post_liked_ids"].length >0) && (result["post_liked_ids"].includes(post_id))){
+        likebutton = createButton(null,"like",null,null,post_id,'<i class="fa fa-heart" style = "color:#f7786b">') 
         
     } 
     else{
-        likebutton = createButton(null,"like",null,null,user_id,'<i class="fa fa-heart" style = "color:#b0aac0">') 
+        likebutton = createButton(null,"like",null,null,post_id,'<i class="fa fa-heart" style = "color:#b0aac0">') 
     }              
 
+    // appendChild(parent = span,edit_button,poster,post,Date_time,like_count,likebutton);
+    
     
     if(edit_button){
-        appendChild(parent = span,edit_button,poster,post,Date_time,like_count,likebutton);
+        appendChild(parent = span,edit_button);
     }
-    else{
-        appendChild(parent = span,poster,post,Date_time,like_count,likebutton);
+
+    appendChild(parent = span,poster);
+    
+    if (delete_button){
+        appendChild(parent = span,delete_button);
     }
+    
+    appendChild(parent = span,post,Date_time,like_count,likebutton)
+
     
     if (!cardCreated){
         //no need to created outer div while editing a post. 
@@ -99,10 +114,10 @@ function setup_post_groups(val,result="",display,cardCreated=false){
 function setup_network_groups(val,result="",section="",display){
    //to setup network divs
        
-    user_id = val["id"]
+    post_id = val["id"]
     let loc = "/network/connect"           
-    var following = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' /> <input type= "submit" class="btn btn-primary"  name = "btn"  value =  following />'
-    var follow = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' /> <input type= "submit"  class="btn btn-primary" name = "btn"  value =  follow />'
+    var following = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + post_id +' /> <input type= "submit" class="btn btn-primary"  name = "btn"  value =  following />'
+    var follow = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + post_id +' /> <input type= "submit"  class="btn btn-primary" name = "btn"  value =  follow />'
     
     let divFlex =createElement('div','flex-container',null,null);
 
@@ -137,7 +152,7 @@ function setup_network_groups(val,result="",section="",display){
 
         for (let j=0;j<result["following_back"].length;j++){
             // unfollow if user does not follow these followers back
-            if(user_id == result["following_back"][j]["id"]){
+            if(post_id == result["following_back"][j]["id"]){
                 //following
                 togglebuttonFolloworUnfollow.innerHTML = following
             }
@@ -160,7 +175,7 @@ function setup_network_groups(val,result="",section="",display){
         }
         for (let j=0;j<result["followers_you_know"].length;j++){
             // unfollow if user does not follow these followers back
-            if(user_id == result["followers_you_know"][j]["id"]){
+            if(post_id == result["followers_you_know"][j]["id"]){
                 //following
                 togglebuttonFolloworUnfollow.innerHTML = following
             }
