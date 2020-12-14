@@ -4,7 +4,7 @@
 
 window.onpopstate = function(event) {
     //remember section when clicking previous 
-    //showSection(event.state.section);
+    showSection(event.state.section);
 }
 
 function showSection(section){
@@ -52,7 +52,18 @@ window.onload = function(){
     
    window.history.pushState({section:initialsection},"",`${initialsection}`);
     console.log("show",`${initialsection}`)
+    
     showSection(initialsection);
+    document.querySelectorAll('#button').forEach(button =>{
+        if (button.dataset.section == initialsection){
+            var current = document.getElementsByClassName("active");    
+            
+            current[0].className = current[0].className.replace("nav-link active", "nav-link");
+            button.className =" nav-link active";
+        }
+    })
+      
+        
 }
 
 document.addEventListener('DOMContentLoaded',function(){ 
@@ -61,7 +72,7 @@ document.addEventListener('DOMContentLoaded',function(){
     document.querySelectorAll('#button').forEach(button =>{
         button.onclick = function(){
             let section = this.dataset.section
-            // window.history.pushState({section:section},"",`${section}`);
+            window.history.pushState({section:section},"",`${section}`);
             showSection(section);
 
             var current = document.getElementsByClassName("active");    
