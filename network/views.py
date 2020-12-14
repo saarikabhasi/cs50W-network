@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect,Http404
+from django.http import HttpResponse, HttpResponseRedirect,Http404,HttpRequest
 import json  
 from django.shortcuts import render,redirect
 from django.urls import reverse
@@ -174,7 +174,7 @@ def newpost(request):
     else:
         return HttpResponseRedirect(reverse("network:login"))
 
-def profile(request,user=""):
+def profile(request,user="",category=""):
     """
     1. retrieves information and redirects to profile.html according to argument - user
 
@@ -190,12 +190,13 @@ def profile(request,user=""):
 
         if len(user) == 0 or request.user.username == user:
             # profile page for current user
-        
+           
             return render(request,'network/profile.html',
                 {
                 "page_info":"current user",
                 "username":request.user.username,
                 "update_follow_form":update_follow_form,
+                "category":category
                 })
         else:  
             # profile page for other user
@@ -249,7 +250,7 @@ def follow_check(request,userobj):
         return HttpResponseRedirect(reverse("network:login"))   
 
 
-def section(request,user,category):
+def profile_section(request,user,category):
     """
     1. retrieves information about user based on category
     2. Categories: myposts, networks, likes
@@ -257,6 +258,7 @@ def section(request,user,category):
     4. generates response string.  
 
     """
+    print("path",request.path_info)
     if request.user.is_authenticated:
 
         userobj = util.get_user_obj(request.user.username)

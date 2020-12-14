@@ -17,7 +17,7 @@ function setup_post_groups(val,result="",display,cardCreated=false){
 
     console.log("username",username)
     var post_username = username
-    let edit_button = null
+    let edit_button = null,delete_button = null
 
     let card =createElement('div',"card",`eachpost_${post_id}`,null);
     let span = createElement('span',null,null,null);

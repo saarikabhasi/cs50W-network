@@ -1,6 +1,7 @@
+ 
    // save section when back button is clicked
     window.onpopstate = function(event) {
-      
+        
         showSection(event.state.section);
     }
     
@@ -8,13 +9,8 @@
         //Show section
        // Find section contents from server
 
-    
-       if (document.location.pathname.includes("profile") ){
-           path = `${username}/${section}`
-       }
-        else{
-            path = `profile/${username}/${section}`
-        }
+        path = `section/${section}`
+        
         fetch(path)
         .then(response => response.text())   
         .then(text => {
@@ -129,19 +125,13 @@
         
     }   
 
- 
+  
 
     window.onload = function(){
 
         // by default show myposts
-
-        let section = "myposts"
-        
-        window.history.pushState({section:section},"",`${section}`);
-        
-        showSection(section);
-        
-        
+        window.history.pushState({section:initialcategory},"",`${initialcategory}`)
+        showSection(initialcategory);   
 
     }
     

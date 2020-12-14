@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded',function(){
             let section = this.dataset.section
             window.history.pushState({section:section},"",`${section}`);
             showSection(section);
-
+            
             var current = document.getElementsByClassName("active");    
             
             current[0].className = current[0].className.replace("nav-link active", "nav-link");
