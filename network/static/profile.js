@@ -133,6 +133,14 @@
         window.history.pushState({section:initialcategory},"",`${initialcategory}`)
         showSection(initialcategory);   
 
+        document.querySelectorAll('#button').forEach(button =>{
+            if (button.dataset.section == initialcategory){
+                var current = document.getElementsByClassName("active");    
+                
+                current[0].className = current[0].className.replace("nav-link active", "nav-link");
+                button.className =" nav-link active";
+            }
+        })
     }
     
 

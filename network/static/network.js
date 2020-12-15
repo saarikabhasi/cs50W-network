@@ -4,6 +4,7 @@
 
 window.onpopstate = function(event) {
     //remember section when clicking previous 
+    
     showSection(event.state.section);
 }
 
@@ -11,7 +12,10 @@ function showSection(section){
     console.log("Show section for",section)
     //find section from server
     path =`section/${section}`
-
+    if (!document.location.pathname.includes("network/network") ){	
+        path = `network/section/${section}`	
+    }	
+   
     console.log("path:",path)
     fetch(path)
     .then(response => response.text())
@@ -23,7 +27,7 @@ function showSection(section){
             3  suggestions 
         */
        var result = JSON.parse(text);
-       var message = {"followers":"No followers yet","following":"No one follows you","suggestions":"No suggestions yet"}
+       var message = {"followers":"Hmm. Looks like you have 0 followers !","following":"No users found! Looks like you dont follow anyone","suggestions":"No suggestions yet"}
        values= result[section]
        let display = createElement('div',null,null,null);  
         if (section in result){
@@ -51,7 +55,8 @@ function showSection(section){
 window.onload = function(){
     
    window.history.pushState({section:initialsection},"",`${initialsection}`);
-    console.log("show",`${initialsection}`)
+   localStorage.setItem("previoussection", initialsection);
+    console.log("window onload initialsection",`${initialsection}`)
     
     showSection(initialsection);
     document.querySelectorAll('#button').forEach(button =>{
@@ -73,6 +78,8 @@ document.addEventListener('DOMContentLoaded',function(){
         button.onclick = function(){
             let section = this.dataset.section
             window.history.pushState({section:section},"",`${section}`);
+            localStorage.setItem("previoussection", section);
+            console.log("button click",`${section}`)
             showSection(section);
             
             var current = document.getElementsByClassName("active");    

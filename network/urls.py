@@ -17,6 +17,7 @@ urlpatterns = [
     path("profile/<str:user>/<str:category>",views.profile,name="profile"),
     path("profile/<str:user>/section/<str:category>",views.profile_section,name="profile_section"),
 
+    path("network",views.network,name="network"),
     path("network/<str:request_type>",views.network,name="network"),
     path("network/section/<str:section>",views.network_section,name="network_section"),
    

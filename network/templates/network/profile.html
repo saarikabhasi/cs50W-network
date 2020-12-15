@@ -23,7 +23,7 @@
 <div id = "profile">
     <div id ="profile-nav">
         <h1>{{username}}</h1>
-        <div><span id ="connect"></span></div>
+        
 
 
 
@@ -74,7 +74,7 @@
 
 {% else %}
         <div class ="follow">
-                    
+            <div><span id ="connect"></span></div>
             <span ><a id = "following_count" >{{following_count}}  Following</a>  </span> 
             <span ><a id = "follower_count" >{{follower_count}} Followers</a></span>
         
@@ -89,7 +89,7 @@
             </div>
 
             
-            <div id ="showposts"> 
+            <div id ="showposts flex-container"> 
                 {% for post in posts %}
 
                     <!-- <hr class="hr_divide_heading">   -->
@@ -129,10 +129,10 @@
         var crsf = formCrsf();
     
         if (connect == "following"){
-            var togglebutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value ='+user_id+' /> <input type= "submit"  name = "btn"  value =  unfollow />')
+            var togglebutton = createElement('span',null,null,'<input type= "hidden" class="btn btn-primary" name = "change"  value ='+user_id+' /> <input type= "submit"  class="btn btn-primary" name = "btn"  value =  unfollow />')
             }
             else{
-            var togglebutton = createElement('span',null,null,'<input type= "hidden"  name = "change"  value ='+user_id+' /> <input type= "submit"  name = "btn"  value =  follow />')
+            var togglebutton = createElement('span',null,null,'<input type= "hidden"  class="btn btn-primary" name = "change"  value ='+user_id+' /> <input type= "submit"  class="btn btn-primary" name = "btn"  value =  follow />')
             }
             
         appendChild(parent =form,crsf,togglebutton);

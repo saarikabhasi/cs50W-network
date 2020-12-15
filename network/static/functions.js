@@ -15,7 +15,7 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     number_of_likes = val["num_of_likes"]
 
 
-    console.log("username",username)
+    // console.log("username",username)
     var post_username = username
     let edit_button = null,delete_button = null
 
@@ -23,8 +23,8 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     let span = createElement('span',null,null,null);
 
     
-    console.log("val",val)
-    console.log("result",result)
+    // console.log("val",val)
+    // console.log("result",result)
  
     if ("user_id_id" in val && "post_liked_user_id_and_username" in result){
         //only for mylikes 
@@ -51,7 +51,7 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     }
 
     let poster = createElement('h2',"card-title","post_userid",null);
-    console.log("poster name",post_username)
+    //console.log("poster name",post_username)
     poster.innerHTML = post_username
         
 
@@ -105,7 +105,7 @@ function setup_post_groups(val,result="",display,cardCreated=false){
    
     
 
-    console.log(display)
+   // console.log(display)
     return display
 }
 
@@ -113,11 +113,13 @@ function setup_post_groups(val,result="",display,cardCreated=false){
 
 function setup_network_groups(val,result="",section="",display){
    //to setup network divs
-       
-    post_id = val["id"]
+    // console.log("section",section)
+    // console.log("result",result)
+    setBtninnerHTML =""
+    user_id = val["id"]
     let loc = "/network/connect"           
-    var following = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + post_id +' /> <input type= "submit" class="btn btn-primary"  name = "btn"  value =  following />'
-    var follow = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + post_id +' /> <input type= "submit"  class="btn btn-primary" name = "btn"  value =  follow />'
+    var following = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' /> <input type= "submit" class="btn btn-primary"  name = "btn"  value =  following />'
+    var follow = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' /> <input type= "submit"  class="btn btn-primary" name = "btn"  value =  follow />'
     
     let divFlex =createElement('div','flex-container',null,null);
 
@@ -142,52 +144,39 @@ function setup_network_groups(val,result="",section="",display){
     }
     //followers
     if (section === "followers"){
-        console.log(result)
+        
         
         if ( typeof result["following_back"] == "number" || result["following_back"].length<=0){
             // user doesnt follow any of followers so follow all 
-            togglebuttonFolloworUnfollow.innerHTML = follow
-            
+            togglebuttonFolloworUnfollow.innerHTML = follow  
         }
 
-        for (let j=0;j<result["following_back"].length;j++){
-            // unfollow if user does not follow these followers back
-            if(post_id == result["following_back"][j]["id"]){
-                //following
-                togglebuttonFolloworUnfollow.innerHTML = following
+ 
+
+            for (let j=0;j<result["following_back"].length;j++){
+                // unfollow if user does not follow these followers back
+                console.log(user_id, result["following_back"][j]["id"])
+                if(user_id == result["following_back"][j]["id"]){
+                    setBtninnerHTML = following
+            
+                }
+            
             }
-            else{
-                //follow
+            if (!setBtninnerHTML){
                 togglebuttonFolloworUnfollow.innerHTML = follow
             }
-
-        }
-        
-        
-        
-    }
-    if (section === "followers_you_know"){
-        
-        if (typeof result["followers_you_know"] == "number" || result["followers_you_know"].length<=0){
-            // user doesnt follow any of followers so follow all 
-            togglebuttonFolloworUnfollow.innerHTML = ""
-            
-        }
-        for (let j=0;j<result["followers_you_know"].length;j++){
-            // unfollow if user does not follow these followers back
-            if(post_id == result["followers_you_know"][j]["id"]){
-                //following
+            else{
                 togglebuttonFolloworUnfollow.innerHTML = following
             }
-            else{
-                //follow
-                togglebuttonFolloworUnfollow.innerHTML = follow
-            }
-
-        }
 
 
     }
+        
+        
+        
+        
+    
+
     //suggestions
     if (section === "suggestions"){
         //follow 
@@ -211,7 +200,7 @@ function setup_message_groups(message,key,display){
     let span = createElement('span',null,null,null);
 
     let username = createElement('h2',"notfound text-center",null,`${message[key]}`)
-    console.log("message",message,"key",key,"display",display)
+    //console.log("message",message,"key",key,"display",display)
     appendChild(parent =div,span,username)
     appendChild(parent =display,div);
     return display

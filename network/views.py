@@ -356,6 +356,7 @@ def connect(request,user=""):
     1. connect a given user 
     
     """
+    print("connect")
     profile_args = True
     """
     profile_args is used to differentiate between different connect function call
@@ -363,7 +364,9 @@ def connect(request,user=""):
     1. From profile page: connect to other user from current user's section/category(networks)(via updatefollowform)
     2. From profile page: connect to other user from other user profile page (via a form created by javascript)
     """
+    print("user",user)
     if request.user.is_authenticated:
+        type = ""
         if len(user) == 0:
             # request from current user's profile page
             profile_args = False
@@ -373,6 +376,7 @@ def connect(request,user=""):
      
     
         form = forms.updatefollowForm(request.POST)
+        print("FORM",form)
         if form.is_valid():
             if form.cleaned_data["change"]:
                 id = form.cleaned_data.get("change")
@@ -380,27 +384,28 @@ def connect(request,user=""):
                 print("form not valid",form.errors)    
 
             if form.cleaned_data["btn"]:
-                changeTo = form.cleaned_data.get("btn")
+                value = form.cleaned_data.get("btn")
             else:
                 print("form not valid",form.errors)    
-           
-            if changeTo == "unfollow":
+
+            if value == "following":
                 followobj = Follow.objects.filter(follower = userobj.id).filter(following = id)
                 followobj.delete()
-                
-                
+                type = "following"
             
-            if changeTo == "follow":
+            if value == "follow":
+      
                 userTobe = User.objects.filter(id = id)
                 instance = Follow.objects.create(follower = userobj)
                 instance.following.set(userTobe)
+                type = "followers"
         else:
             print("Form not valid",form.errors)
-        path = "network:profile/"+request.user.username+"/networks/"
-        print("path",path)
+
         if profile_args:
             return HttpResponseRedirect(reverse('network:profile',kwargs={'user':user}))
-        return redirect('network:profile')
+        return HttpResponseRedirect(reverse('network:network'))
+        #redirect('network:profile',kwargs={'user':request.user.username,'category':'networks'})
         #return HttpResponseRedirect(reverse('network:profile'))
         
         
@@ -623,7 +628,7 @@ def delete_post(request,post_id):
     else:
         return HttpResponseRedirect(reverse("network:login"))
 
-def network(request,request_type):
+def network(request,request_type=""):
     """
     1. return user follow and following list with dictonary
     """

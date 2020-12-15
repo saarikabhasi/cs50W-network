@@ -80,7 +80,7 @@ button{
 }
 #main-nav a.nav-link:hover{
     color: #092834;
-    text-decoration: underline;
+    /* text-decoration: underline; */
 }
 #mini-nav button.nav-link:hover{
     color:#092834 !important;
@@ -90,7 +90,7 @@ button{
 #mini-nav button.active{
     
     /* background-color: rgb(182, 186, 187) !important; */
-    text-decoration: underline;
+    /* text-decoration: underline; */
 
 }
 #logo{
@@ -129,20 +129,23 @@ div#signIn{
 #signIn a.btn-link{ 
     font-size: 1.4rem;
     color:rgb(0, 132, 184);
-   
+    text-decoration: none;
     
+   
+
 
 }
 #signIn a.btn-link:hover{
-    color: rgb(2, 47, 65);
-    text-decoration-line: underline;
+    color: rgb(155, 155, 155);
+    
+    /* text-decoration-line: underline; */
     
 }
 #signIn input.btn-primary{
     font-size: 1.4rem;
     color:rgb(0, 132, 184);
     background-color: transparent;
-    text-decoration: underline;
+    /* text-decoration: underline; */
     border: none;   
    
 }
@@ -255,7 +258,7 @@ button#edit{
     border:none;
     font-size: 25px;
     background-color:transparent;
-    text-decoration: underline;
+    /* text-decoration: underline; */
     float: right;
 }
 
@@ -279,7 +282,7 @@ button#delete{
     border:none;
     font-size: 25px;
     background-color:transparent;
-    text-decoration: underline;
+    /* text-decoration: underline; */
     float: right;
 }
 
@@ -353,4 +356,12 @@ button#delete{
 span.form input{
     background-color: rgb(182, 175, 182);
     border: none;
+}
+#connect .btn-primary{
+    /* margin-left: 40%; */
+    float: center;
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
 }

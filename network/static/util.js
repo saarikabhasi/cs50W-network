@@ -30,7 +30,7 @@ function createForm(method,action,onsubmit,id){
     if (action){element.setAttribute('action',action);}
     if (onsubmit){element.setAttribute('onsubmit',onsubmit);}
     if (id) {element.setAttribute('id',id)}
-    console.log(element,onsubmit)
+  
 
     return element
 }
