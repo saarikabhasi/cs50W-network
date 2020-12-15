@@ -11,11 +11,13 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     
     post_user_id = val["user_id_id"]
     post_content = val["contents"]
-    post_date_and_time = val["date_and_time"]
+    
+    jsonDate= new Date(val["date_and_time"]).toJSON()
+    post_date_and_time = new Date(jsonDate).toUTCString()
+  
     number_of_likes = val["num_of_likes"]
 
 
-    // console.log("username",username)
     var post_username = username
     let edit_button = null,delete_button = null
 
@@ -23,8 +25,7 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     let span = createElement('span',null,null,null);
 
     
-    // console.log("val",val)
-    // console.log("result",result)
+
  
     if ("user_id_id" in val && "post_liked_user_id_and_username" in result){
         //only for mylikes 
@@ -51,7 +52,7 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     }
 
     let poster = createElement('h2',"card-title","post_userid",null);
-    //console.log("poster name",post_username)
+
     poster.innerHTML = post_username
         
 
@@ -65,11 +66,11 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     
    
     let post = createElement('h3',null,"post_content",String(post_content));
-    let Date_time = createElement('h4',null,"post_dateandtime",String(new Date(post_date_and_time)));     
+    let Date_time = createElement('h4',null,"post_dateandtime",post_date_and_time);     
     let like_count = createElement('h4',null,`num_likes_${post_id}`,`${String(number_of_likes)} like(s)`);
     
     let likebutton =0
-    
+
     if ((parseInt (number_of_likes)> 0 ) && ("post_liked_ids" in result) &&(result["post_liked_ids"].length >0) && (result["post_liked_ids"].includes(post_id))){
         likebutton = createButton(null,"like",null,null,post_id,'<i class="fa fa-heart" style = "color:#f7786b">') 
         
@@ -80,17 +81,17 @@ function setup_post_groups(val,result="",display,cardCreated=false){
 
     // appendChild(parent = span,edit_button,poster,post,Date_time,like_count,likebutton);
     
-    
+    if (delete_button){
+        appendChild(parent = span,delete_button);
+    }
     if(edit_button){
         appendChild(parent = span,edit_button);
     }
 
+    
+    
+    
     appendChild(parent = span,poster);
-    
-    if (delete_button){
-        appendChild(parent = span,delete_button);
-    }
-    
     appendChild(parent = span,post,Date_time,like_count,likebutton)
 
     
@@ -105,21 +106,32 @@ function setup_post_groups(val,result="",display,cardCreated=false){
    
     
 
-   // console.log(display)
+
     return display
 }
 
 // NETWORK
 
-function setup_network_groups(val,result="",section="",display){
+function setup_network_groups(val,result="",section="",display,requestfromSection =""){
    //to setup network divs
-    // console.log("section",section)
-    // console.log("result",result)
+
+  
+    
     setBtninnerHTML =""
     user_id = val["id"]
-    let loc = "/network/connect"           
+    let loc = "/network/connect"     
+    
+
+          
+   if (requestfromSection){
+    var following = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' /><input type= "hidden" class="btn btn-primary" name = "fromSection"  value =' + requestfromSection +' />  <input type= "submit" class="btn btn-primary"  name = "btn"  value =  following />'
+    var follow = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' /> <input type= "hidden" class="btn btn-primary" name = "fromSection"  value =' + requestfromSection +' /> <input type= "submit"  class="btn btn-primary" name = "btn"  value =  follow />'
+   }
+   else{
     var following = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' /> <input type= "submit" class="btn btn-primary"  name = "btn"  value =  following />'
-    var follow = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' /> <input type= "submit"  class="btn btn-primary" name = "btn"  value =  follow />'
+    var follow = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' />  <input type= "submit"  class="btn btn-primary" name = "btn"  value =  follow />'
+   }
+    
     
     let divFlex =createElement('div','flex-container',null,null);
 
@@ -189,7 +201,8 @@ function setup_network_groups(val,result="",section="",display){
     appendChild(parent= divFlex,divUsername,divForm)
     
     appendChild(parent=display,divFlex,hr)
-
+    
+    
     return display
 
 }

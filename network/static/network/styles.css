@@ -43,7 +43,7 @@ button{
 }
 .notfound{
     color: rgb(245, 77, 77)  !important;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
 } 
 #mini-nav{
     /* background-color:#829095!important;  */
@@ -70,12 +70,13 @@ button{
   
 }
 #mini-nav button.nav-link{
-    color: teal !important;
+    color: teal ;
     border: none;
-    background-color:#E4F1F6!important;
+    background-color:#E4F1F6;
     margin-left: 7.5rem;
     margin-top: 1rem;
     margin-right: 7.5rem  ;
+    border-radius: 100px;
     
 }
 #main-nav a.nav-link:hover{
@@ -83,13 +84,16 @@ button{
     /* text-decoration: underline; */
 }
 #mini-nav button.nav-link:hover{
-    color:#092834 !important;
-    text-decoration: underline;
+    color: rgb(255, 255, 255);
+    background-color: rgb(8, 154, 202);
+
+    /* text-decoration: underline; */
     /* color:#347B98 !important; */
 }
 #mini-nav button.active{
     
-    /* background-color: rgb(182, 186, 187) !important; */
+    color: rgb(255, 255, 255);
+    background-color: rgb(8, 154, 202);
     /* text-decoration: underline; */
 
 }
@@ -296,7 +300,8 @@ button#delete{
     clear:both;
     margin-left: 15%;
     margin-top: 1rem;
-    color:rgb(8, 154, 202);
+    color:rgb(19, 19, 19);
+    text-decoration: none;
     /* float: center; */
     /* left: 10%;
     right: 10%; */
@@ -307,7 +312,8 @@ button#delete{
 #newpost-div h2{
     font-size: 1.5rem;
     margin-bottom: 2rem;
-    text-align: center;
+    /* text-align: left; */
+    margin-left: 15%;
     color:rgb(8, 154, 202);
 
 }
@@ -316,7 +322,7 @@ button#delete{
     float: left;
     position: relative;
     top: 0rem;
-    margin-left: 48%;
+    margin-left: 15%;
     margin-top: 1rem;
 
 
@@ -357,6 +363,7 @@ span.form input{
     background-color: rgb(182, 175, 182);
     border: none;
 }
+
 #connect .btn-primary{
     /* margin-left: 40%; */
     float: center;

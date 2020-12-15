@@ -66,7 +66,7 @@
                     networks= result[key]
                     if (networks){
                         for (i = 0; i<networks.length; i++){
-                            display = setup_network_groups(networks[i],null,key,display);
+                            display = setup_network_groups(networks[i],null,key,display,section);
                         }
                     }
                     // else{

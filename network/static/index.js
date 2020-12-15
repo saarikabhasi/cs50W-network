@@ -70,8 +70,12 @@ var likebutton = 0,editbutton = 0
 function edit_post(postId,post_username){
     // edit post
     id = `eachpost_${postId}`
-        
+    path =""
     display = createElement('div',null,null,null);
+
+    if (!document.location.pathname.includes("profile/") ){	
+        path = `network/editpost/${postId}`	
+    }	
 
     fetch(`editpost/${postId}`)
     .then(response =>response.text())
@@ -120,7 +124,7 @@ function save_post(postId){
             .then(text =>{
             
                 result = JSON.parse(text)
-                console.log(result)
+ 
                 const keys = ["result"]
                 keys.forEach(key=>{
 
@@ -162,4 +166,9 @@ function delete_post(post_id){
 }
         
 
+if(document.getElementById("nopostfound")){
+    element = document.getElementById("newpost")
+    element.style.backgroundColor = "rgb(8, 154, 202)"
+    element.style.color = "rgb(255, 255, 255)"
 
+}

@@ -21,12 +21,18 @@ urlpatterns = [
     path("network/<str:request_type>",views.network,name="network"),
     path("network/section/<str:section>",views.network_section,name="network_section"),
    
-
     path("editpost/<int:post_id>",views.edit_post,name="editpost"),
+    path("profile/<str:user>/editpost/<int:post_id>",views.edit_post,name="editpost"),
+
     path("savepost/<int:post_id>/<str:content>",views.save_post,name="save_post"),
+    path("profile/<str:user>/savepost/<int:post_id>/<str:content>",views.save_post,name="save_post"),
+    
+    path("profile/<str:user>/deletepost/<int:post_id>", views.delete_post, name="delete_post"),
     path("deletepost/<int:post_id>", views.delete_post, name="delete_post"),
     
     path("like/<int:post_id>", views.update_like, name="update_like"),
+    path("profile/<str:user>/like/<int:post_id>", views.update_like, name="update_like"),
+    
     
     
     path("connect/<str:user>",views.connect,name="connect"),

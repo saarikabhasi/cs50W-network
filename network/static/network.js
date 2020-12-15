@@ -9,7 +9,7 @@ window.onpopstate = function(event) {
 }
 
 function showSection(section){
-    console.log("Show section for",section)
+  
     //find section from server
     path =`section/${section}`
     if (!document.location.pathname.includes("network/network") ){	
@@ -55,16 +55,18 @@ function showSection(section){
 window.onload = function(){
     
    window.history.pushState({section:initialsection},"",`${initialsection}`);
+    //storing previousection to localstorage so that i can use the information while refreshing the page!
    localStorage.setItem("previoussection", initialsection);
-    console.log("window onload initialsection",`${initialsection}`)
+    
     
     showSection(initialsection);
     document.querySelectorAll('#button').forEach(button =>{
         if (button.dataset.section == initialsection){
             var current = document.getElementsByClassName("active");    
-            
+           
             current[0].className = current[0].className.replace("nav-link active", "nav-link");
             button.className =" nav-link active";
+            
         }
     })
       
@@ -79,7 +81,7 @@ document.addEventListener('DOMContentLoaded',function(){
             let section = this.dataset.section
             window.history.pushState({section:section},"",`${section}`);
             localStorage.setItem("previoussection", section);
-            console.log("button click",`${section}`)
+  
             showSection(section);
             
             var current = document.getElementsByClassName("active");    

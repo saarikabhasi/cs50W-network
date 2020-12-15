@@ -18,12 +18,13 @@ def index(request,message =""):
     1. display all the posts with pagination
     2. user can like any post 
     3. user can edit their own post
+    4. user can delete their own post
     """
     if request.user.is_authenticated:
 
         all_posts = Post.objects.all().order_by('-date_and_time')
         allposts = paginate(request,all_posts)
-
+        
         post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
   
         return render(request,"network/index.html",{
@@ -159,6 +160,7 @@ def newpost(request):
                     # update POST model
                     username = User.objects.get(username = username)
                     date_time = timezone.now()
+                  
                     post = Post(contents = content,user_id=username,date_and_time=date_time,num_of_likes=0)
                     post.save()
                     return HttpResponseRedirect(reverse("network:index"))
@@ -174,7 +176,7 @@ def newpost(request):
     else:
         return HttpResponseRedirect(reverse("network:login"))
 
-def profile(request,user="",category=""):
+def profile(request,user="",category=""):   
     """
     1. retrieves information and redirects to profile.html according to argument - user
 
@@ -238,14 +240,15 @@ def follow_check(request,userobj):
     if request.user.is_authenticated:
         if request.user.username == userobj.username:
             # checking if current user follows itself
-            return "ERROR"
+            # so sending HttpResponse status code 400- Bad request
+            return HttpResponse(status = 400)
         else:
             # get count 
             check = len(Follow.objects.filter(follower = request.user.id).filter(following = userobj.id))
         
             if check > 0:
                 return "following"
-            return "notfollowimg"
+            return "follow"
     else:
         return HttpResponseRedirect(reverse("network:login"))   
 
@@ -258,7 +261,7 @@ def profile_section(request,user,category):
     4. generates response string.  
 
     """
-    print("path",request.path_info)
+  
     if request.user.is_authenticated:
 
         userobj = util.get_user_obj(request.user.username)
@@ -355,59 +358,70 @@ def connect(request,user=""):
     """
     1. connect a given user 
     
-    """
-    print("connect")
-    profile_args = True
-    """
-    profile_args is used to differentiate between different connect function call
-    There are totally two calls to connect 
-    1. From profile page: connect to other user from current user's section/category(networks)(via updatefollowform)
+ 
+    There are totally three path that call this view function 
+    1. From profile page: connect to other user from current user's section/category(networks)
     2. From profile page: connect to other user from other user profile page (via a form created by javascript)
+    3. From network page: to connect any other user from sections: followers,following and suggestions
     """
-    print("user",user)
+  
     if request.user.is_authenticated:
-        type = ""
-        if len(user) == 0:
-            # request from current user's profile page
-            profile_args = False
-
         
+        section =""
+
         userobj = util.get_user_obj(request.user.username)
      
     
         form = forms.updatefollowForm(request.POST)
-        print("FORM",form)
+       
         if form.is_valid():
+
+            #get user id
             if form.cleaned_data["change"]:
                 id = form.cleaned_data.get("change")
             else:
                 print("form not valid",form.errors)    
 
+            # get value to be changed such as follow or following 
             if form.cleaned_data["btn"]:
                 value = form.cleaned_data.get("btn")
             else:
                 print("form not valid",form.errors)    
 
+            # get section 
+            # This function is being called by network page and profile page. 
+            # So inorder differentiate get section value from form button. 
+            # This section value is avaible only if request was from profile page
+            if form.cleaned_data["fromSection"]:
+                section = form.cleaned_data.get("fromSection")
+            else:
+                print("form not valid",form.errors)    
+
+            #following
             if value == "following":
                 followobj = Follow.objects.filter(follower = userobj.id).filter(following = id)
                 followobj.delete()
-                type = "following"
-            
+                
+            #follow
             if value == "follow":
       
                 userTobe = User.objects.filter(id = id)
                 instance = Follow.objects.create(follower = userobj)
                 instance.following.set(userTobe)
-                type = "followers"
+                
+
         else:
             print("Form not valid",form.errors)
-
-        if profile_args:
+        
+      
+        if section:
+            # request came from profile page so redirecting to same
+            return HttpResponseRedirect(reverse('network:profile',kwargs={'user':request.user.username,'category':section}))
+        if len(user) != 0:
+            # request came while user checking on other user profile
             return HttpResponseRedirect(reverse('network:profile',kwargs={'user':user}))
         return HttpResponseRedirect(reverse('network:network'))
-        #redirect('network:profile',kwargs={'user':request.user.username,'category':'networks'})
-        #return HttpResponseRedirect(reverse('network:profile'))
-        
+
         
     else:
         return HttpResponseRedirect(reverse("network:login")) 
@@ -485,7 +499,7 @@ def get_myliked_post(request):
     else:
         return HttpResponseRedirect(reverse("network:login"))
         
-def update_like(request,post_id):
+def update_like(request,post_id,user=""):
     
     '''
     like feature
@@ -565,7 +579,7 @@ def following_posts(request):
 
         return HttpResponseRedirect(reverse("network:login"))
 
-def edit_post(request,post_id):
+def edit_post(request,post_id,user=""):
     """
     1. get old post content from db
     2. send content as HttpResponse
@@ -574,24 +588,29 @@ def edit_post(request,post_id):
     
 
     if request.user.is_authenticated:
-        # get content
-        content = util.queryset_post_content(post_id)
+        #check if post is made by user
         
-        if content:
-            content = str(content[0])
-       
-        response = {"contents":content}
-        response = json.dumps(response,default=str)
+        if (get_all_post_by_user(request).filter(id = post_id)):
+            # get content
+            content = util.queryset_post_content(post_id)
+            
+            if content:
+                content = str(content[0])
         
-   
+            response = {"contents":content}
+            response = json.dumps(response,default=str)
+            
+    
 
-        return HttpResponse(response,content_type = "application/json")
-       
+            return HttpResponse(response,content_type = "application/json")
+        else:
+            #post was not made by user and other user may be trying get information
+            return HttpResponse(status=400)
     else:
 
         return HttpResponseRedirect(reverse("network:login"))
 
-def save_post(request,post_id,content):
+def save_post(request,post_id,content,user=""):
     """
     1. update new content
     2. send new content as HttpResponse
@@ -605,16 +624,16 @@ def save_post(request,post_id,content):
         update_post = util.update_post(post_id,content)
         postobj = update_post.values()
 
-        result = {"result":list(postobj)}
+        result = {"result":list(postobj),"post_liked_ids" :list(get_myliked_post(request).values_list("id",flat= True))}
         response = json.dumps(result,default=str)
-        print("RESp",response)
+
         return HttpResponse(response,content_type = "application/json")
 
     else:
 
         return HttpResponseRedirect(reverse("network:login"))
 
-def delete_post(request,post_id):
+def delete_post(request,post_id,user=""):
     """
     
     1. delete given postid from db
@@ -632,8 +651,6 @@ def network(request,request_type=""):
     """
     1. return user follow and following list with dictonary
     """
-    print("network")
-    print("args")
 
     if request.user.is_authenticated:
     
@@ -646,8 +663,7 @@ def network(request,request_type=""):
         return HttpResponseRedirect(reverse("network:login"))
 
 def network_section(request,section):
-    print("network_section")
-    print("args\n","section:",section)
+
 
     """
     1. get following and followers information
@@ -706,7 +722,7 @@ def network_section(request,section):
         
             
         result = dict({"following":following,"suggestions":suggestion,"followers":followers,"following_back": following_back})
-        print("RESULT",result)
+       
         response = json.dumps(result,default=str)
 
         return HttpResponse(response,content_type = "application/json")
