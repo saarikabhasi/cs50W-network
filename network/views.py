@@ -286,29 +286,8 @@ def profile_section(request,user,category):
                 2. user follows all.  
                 3. user follows some.
                 '''
-                # current_following = Follow.objects.filter(follower = userobj.id)
 
-                # if len(current_following) == 0:
-                #     #user follows no one.
-                #     user_can_follow =  list(User.objects.all().exclude(username = userobj).values('id','username'))
-                    
-                #     user_currently_follows  = 0
 
-                # elif len(current_following) == len(User.objects.all().exclude(username = userobj)):
-                #     # user follows all (except itself)
-
-                #     user_can_follow = 0
-
-                #     ids = Follow.objects.values_list('following',flat= True).filter(follower = userobj.id)
-                #     user_currently_follows = list(User.objects.filter(id__in = set(ids)).values('id','username'))
-  
-                # else :
-                #     # user follows some
-                
-                #     user_currently_follow_ids = Follow.objects.values_list('following',flat= True).filter(follower = userobj.id)
-                    
-                #     user_currently_follows = list(User.objects.filter(id__in = set(user_currently_follow_ids)).values('id','username'))
-                #     user_can_follow = list(User.objects.all().exclude(username = userobj).exclude(id__in = set(user_currently_follow_ids)).values('id','username'))
                 
                 following,suggestions = util.get_user_networks(request.user.username)
                 # dictonary to store results
@@ -415,7 +394,8 @@ def connect(request,user=""):
         
       
         if section:
-            # request came from profile page so redirecting to same
+            # request came from profile page so redirecting profile view with category.
+            # so page redirects back to exact same path
             return HttpResponseRedirect(reverse('network:profile',kwargs={'user':request.user.username,'category':section}))
         if len(user) != 0:
             # request came while user checking on other user profile
