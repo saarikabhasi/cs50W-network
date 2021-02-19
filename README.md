@@ -8,7 +8,7 @@ Youtube :https://www.youtube.com/watch?v=bVUxNgm_cDY&t
 
 ### Description:
 
-Design of Social Network web application
+Design of Social Network website with Django
 
 
 
