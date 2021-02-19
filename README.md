@@ -47,7 +47,5 @@ Design of Social Network web application
 ```
 
 ### Author:
-------------
-NAIR SAARIKA BHASI
-# saarikabhasi
+saarikabhasi
    
