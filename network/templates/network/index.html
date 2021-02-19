@@ -5,10 +5,15 @@
 {% endblock %}
 {% load static %}
 {% block body %}
-
+    <!-- 
+    1. display all the posts with pagination
+    2. user can like any post 
+    3. user can edit their own post
+    4. user can delete their own post 
+    -->
 <script type ="text/javascript" src="{% static 'util.js' %}"></script>
 
-    <!-- <h1 id="page-heading"> All posts</h1> -->
+
     <div class = "container-allpost"  >
         <form action="{% url 'network:newpost' %}" method ="POST">
             {% csrf_token %}    
@@ -47,14 +52,13 @@
                         
                     <div class = "card" id = eachpost_{{post.id}} >
                         <span>
-                            {% with post_username=post.user_id %}
-                            {% ifequal post_username|lower user.username|lower %}
-                            
+                           
+                            {% with post_userId=post.user_id_id %}
+                            {% ifequal post_userId user.id %}
+                                <!-- user can delete and edit only their own post -->
                                 <button id = "edit" name ="edit"type="submit" value= {{post.id}} onclick = "edit_post('{{ post.id }}','{{ post_username }}')"><i class="fa fa-edit" style = "color:#f7786b"></i></button>
-                                <!-- <div id = "editpost"></div> -->
-                             
-
-                                
+                               
+                            
                                 <button id="delete" name = "delete" type = "submit" value= {{post.id}} onclick = "delete_post('{{ post.id }}')"  ><i class="fa fa-trash" style = "color:#f7786b"></i></button>
                                
                              

@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect,Http404,HttpRequest
+from django.http import HttpResponse, HttpResponseRedirect,Http404
 import json  
 from django.shortcuts import render,redirect
 from django.urls import reverse
@@ -15,16 +15,15 @@ from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
 def index(request,message =""):
 
     """
-    1. display all the posts with pagination
-    2. user can like any post 
-    3. user can edit their own post
-    4. user can delete their own post
+    1. get all the posts 
+    2. pagination
+    3. get user liked post ids. (used at front end)
     """
     if request.user.is_authenticated:
 
         all_posts = Post.objects.all().order_by('-date_and_time')
         allposts = paginate(request,all_posts)
-        
+
         post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
   
         return render(request,"network/index.html",{
@@ -204,7 +203,7 @@ def profile(request,user="",category=""):
             # profile page for other user
             if User.objects.filter(username = user):
                 # get user object
-                userobj = util.get_user_obj(user)
+                userobj = util.get_user_obj_by_username(user)
                 #get user's posts
                 posts = get_all_post_by_user(request,user)
                 #get user's liked posts
@@ -264,7 +263,7 @@ def profile_section(request,user,category):
   
     if request.user.is_authenticated:
 
-        userobj = util.get_user_obj(request.user.username)
+        userobj = util.get_user_obj_by_userId(request.user.id)
         # get user's follow counts
         follow = follow_counts(request,userobj)
 
@@ -289,7 +288,7 @@ def profile_section(request,user,category):
 
 
                 
-                following,suggestions = util.get_user_networks(request.user.username)
+                following,suggestions = util.get_user_networks(request.user.id)
                 # dictonary to store results
                 if following == 0:
                     following = 0
@@ -325,6 +324,7 @@ def profile_section(request,user,category):
 
         # add follow information of the user to dictonary result
         result.update(follow)
+        
         # generate response as string
         response = json.dumps(result,default=str)
         
@@ -343,12 +343,13 @@ def connect(request,user=""):
     2. From profile page: connect to other user from other user profile page (via a form created by javascript)
     3. From network page: to connect any other user from sections: followers,following and suggestions
     """
+   
   
     if request.user.is_authenticated:
         
         section =""
 
-        userobj = util.get_user_obj(request.user.username)
+        userobj = util.get_user_obj_by_userId(request.user.id)
      
     
         form = forms.updatefollowForm(request.POST)
@@ -370,12 +371,15 @@ def connect(request,user=""):
             # get section 
             # This function is being called by network page and profile page. 
             # So inorder differentiate get section value from form button. 
-            # This section value is avaible only if request was from profile page
+            # This section value is available only if request was from profile page
             if form.cleaned_data["fromSection"]:
                 section = form.cleaned_data.get("fromSection")
             else:
                 print("form not valid",form.errors)    
 
+            #making sure that user does not try to connect itself
+            if id == userobj.id :
+                return HttpResponse(status = 400)
             #following
             if value == "following":
                 followobj = Follow.objects.filter(follower = userobj.id).filter(following = id)
@@ -435,7 +439,7 @@ def get_all_post_by_user(request,required_user = ""):
             username = request.user.username
         
        
-        userobj = util.get_user_obj(username)
+        userobj = util.get_user_obj_by_username(username)
         posts = Post.objects.filter(user_id = userobj.id).order_by('-date_and_time').values()
         
         
@@ -469,7 +473,7 @@ def get_myliked_post(request):
     if request.user.is_authenticated:
 
 
-        userobj = util.get_user_obj(request.user.username)
+        userobj = util.get_user_obj_by_userId(request.user.id)
         
         likeobj = Like.objects.values_list('post',flat=True).filter(user = userobj.id)
         
@@ -491,7 +495,7 @@ def update_like(request,post_id,user=""):
    
     if request.user.is_authenticated:
 
-        userobj = util.get_user_obj(request.user.username)
+        userobj = util.get_user_obj_by_userId(request.user.id)
         postobj = Post.objects.get(id = post_id)
 
         #check if post is already liked by user
@@ -547,7 +551,7 @@ def following_posts(request):
     """
     if request.user.is_authenticated:
 
-        userobj = util.get_user_obj(request.user.username)
+        userobj = util.get_user_obj_by_userId(request.user.id)
         posts = paginate(request,get_all_posts_of_user_network(request,userobj))
         post_liked_ids = get_myliked_post(request).values_list("id",flat= True)
         return render (request, "network/following.html",{
@@ -631,7 +635,7 @@ def network(request,request_type=""):
     """
     1. return user follow and following list with dictonary
     """
-
+  
     if request.user.is_authenticated:
     
         return  render(request,"network/network.html",{
@@ -659,10 +663,10 @@ def network_section(request,section):
 
         #follow and following information
         
-        username_network_tofind = request.user.username
+        user_id_network_tofind = request.user.id
         following_back = 0
-
-        following,suggestion = util.get_user_networks(username_network_tofind)
+        
+        following,suggestion = util.get_user_networks(user_id_network_tofind)
         
         if suggestion == 0:
             suggestion = 0
@@ -670,7 +674,7 @@ def network_section(request,section):
             suggestion = list(suggestion)
         
         #follower information
-        follower_ids = util.get_follower_ids(username_network_tofind)
+        follower_ids = util.get_follower_ids(user_id_network_tofind)
 
         if follower_ids !=0 and following !=0:
 
@@ -693,11 +697,6 @@ def network_section(request,section):
             followers = 0
         else:
             followers = list(followers)
-        
-        
-       
-        
-        
         
         
             

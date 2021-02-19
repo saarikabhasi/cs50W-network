@@ -11,9 +11,6 @@ class Follow(models.Model):
     following = models.ManyToManyField(User,blank =True,related_name="Following") 
     #follower follows many users
 
-    # def get_following(self):
-    #     print("follow class GET_FOLLOWING")
-    #     return "\n".join([[p.username, p.id] for p in User.objects.all()])
 
     def __str__ (self):  
         return f" {self.id}: {self.follower} follows {self.following.all().values('id','username')}"
@@ -30,12 +27,9 @@ class Post(models.Model):
     def __str__ (self):
         return f" {self.id}: {self.contents} by {self.user_id} on {self.date_and_time} has {self.num_of_likes}"
 
-# likes
+# like
 class Like(models.Model):
-    # likedUser = models.ForeignKey(User, on_delete= models.CASCADE, related_name="likeuserID")
-    # post = models.ManyToManyField(Post, blank =True, related_name="Post")
-   
-    
+
     post = models.ForeignKey(Post,on_delete= models.CASCADE,related_name="Post")
     user = models.ManyToManyField(User,blank =True,related_name="user_info")
 

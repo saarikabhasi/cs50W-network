@@ -12,7 +12,6 @@ urlpatterns = [
   
     path("newpost", views.newpost, name="newpost"),
 
-   
     path("profile/<str:user>",views.profile,name="profile"),
     path("profile/<str:user>/<str:category>",views.profile,name="profile"),
     path("profile/<str:user>/section/<str:category>",views.profile_section,name="profile_section"),
@@ -33,10 +32,9 @@ urlpatterns = [
     path("like/<int:post_id>", views.update_like, name="update_like"),
     path("profile/<str:user>/like/<int:post_id>", views.update_like, name="update_like"),
     
-    
-    
     path("connect/<str:user>",views.connect,name="connect"),
     path("connect",views.connect,name="connect"),
+
     path("following",views.following_posts,name="following_posts"),
     
 

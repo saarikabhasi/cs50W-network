@@ -8,7 +8,7 @@
     function showSection(section){
         //Show section
        // Find section contents from server
-
+       
         path = `section/${section}`
         
         fetch(path)
@@ -66,12 +66,11 @@
                     networks= result[key]
                     if (networks){
                         for (i = 0; i<networks.length; i++){
+                           
                             display = setup_network_groups(networks[i],null,key,display,section);
                         }
                     }
-                    // else{
-                    //     display = setup_message_groups(message,"common",display)
-                    // }
+                    //no need display any message if dict is empty
 
                 })
                 
@@ -128,7 +127,7 @@
   
 
     window.onload = function(){
-
+        console.log('onload')
         // by default show myposts
         window.history.pushState({section:initialcategory},"",`${initialcategory}`)
         showSection(initialcategory);   
@@ -147,7 +146,7 @@
     document.addEventListener('DOMContentLoaded',function(){
 
        
-        
+        console.log('DOMContentLoaded')
         // Add section functionality
         document.querySelectorAll('#button').forEach(button =>{
             button.onclick = function(){

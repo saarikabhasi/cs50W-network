@@ -1,10 +1,12 @@
+// this file contains functions that is used to setup dom objects
+
 //RESULT
 function setup_result(display){
-    //setup dom element display to result 
+    //display to result element
     document.querySelector("#result").innerHTML = display.innerHTML;
 }
 
-//MYPOSTs and MYLIKES
+//Setup DOM for display posts
 function setup_post_groups(val,result="",display,cardCreated=false){
     
     post_id = val["id"]
@@ -24,11 +26,9 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     let card =createElement('div',"card",`eachpost_${post_id}`,null);
     let span = createElement('span',null,null,null);
 
-    
-
  
     if ("user_id_id" in val && "post_liked_user_id_and_username" in result){
-        //only for mylikes 
+        //only for mylikes sections
         if (val["user_id_id"] in result["post_liked_user_id_and_username"]){
             post_username = result["post_liked_user_id_and_username"][post_user_id]
         } 
@@ -54,16 +54,7 @@ function setup_post_groups(val,result="",display,cardCreated=false){
     let poster = createElement('h2',"card-title","post_userid",null);
 
     poster.innerHTML = post_username
-        
-
-        
-    
-        
-       
-    
-
   
-    
    
     let post = createElement('h3',null,"post_content",String(post_content));
     let Date_time = createElement('h4',null,"post_dateandtime",post_date_and_time);     
@@ -79,7 +70,7 @@ function setup_post_groups(val,result="",display,cardCreated=false){
         likebutton = createButton(null,"like",null,null,post_id,'<i class="fa fa-heart" style = "color:#b0aac0">') 
     }              
 
-    // appendChild(parent = span,edit_button,poster,post,Date_time,like_count,likebutton);
+   
     
     if (delete_button){
         appendChild(parent = span,delete_button);
@@ -106,23 +97,19 @@ function setup_post_groups(val,result="",display,cardCreated=false){
    
     
 
-
     return display
 }
 
-// NETWORK
+//Setup DOM for display networks
 
 function setup_network_groups(val,result="",section="",display,requestfromSection =""){
-   //to setup network divs
+   
 
-  
-    
     setBtninnerHTML =""
     user_id = val["id"]
     let loc = "/network/connect"     
     
 
-          
    if (requestfromSection){
     var following = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' /><input type= "hidden" class="btn btn-primary" name = "fromSection"  value =' + requestfromSection +' />  <input type= "submit" class="btn btn-primary"  name = "btn"  value =  following />'
     var follow = '<input type= "hidden" class="btn btn-primary" name = "change"  value =' + user_id +' /> <input type= "hidden" class="btn btn-primary" name = "fromSection"  value =' + requestfromSection +' /> <input type= "submit"  class="btn btn-primary" name = "btn"  value =  follow />'
@@ -134,16 +121,16 @@ function setup_network_groups(val,result="",section="",display,requestfromSectio
     
     
     let divFlex =createElement('div','flex-container',null,null);
-
     let divUsername =createElement('div','username',null,null);
     let h2Username = createElement('h2',null,"post_userid",String(val["username"]))
+    
     appendChild(parent = divUsername,h2Username)
 
     let divForm=createElement('div','form',null,null);
-
     var form = createForm("post",loc)
     var crsf = formCrsf();
     var togglebuttonFolloworUnfollow = createElement('span','form',null,null)
+
     appendChild(parent=form,crsf,togglebuttonFolloworUnfollow)
 
     let hr = createElement('hr','hr_divide_heading',null,null,null)
@@ -163,11 +150,9 @@ function setup_network_groups(val,result="",section="",display,requestfromSectio
             togglebuttonFolloworUnfollow.innerHTML = follow  
         }
 
- 
-
             for (let j=0;j<result["following_back"].length;j++){
                 // unfollow if user does not follow these followers back
-                console.log(user_id, result["following_back"][j]["id"])
+                
                 if(user_id == result["following_back"][j]["id"]){
                     setBtninnerHTML = following
             
@@ -184,19 +169,13 @@ function setup_network_groups(val,result="",section="",display,requestfromSectio
 
     }
         
-        
-        
-        
-    
 
     //suggestions
     if (section === "suggestions"){
         //follow 
         togglebuttonFolloworUnfollow.innerHTML = follow
     }
-
-
-            
+        
     appendChild(parent=divForm,form)
     appendChild(parent= divFlex,divUsername,divForm)
     
@@ -207,13 +186,13 @@ function setup_network_groups(val,result="",section="",display,requestfromSectio
 
 }
 
+//Setup DOM for displaying messages with error message!
 function setup_message_groups(message,key,display){
-    //setup not found message
+   
     let div =createElement('div',null,null,null);
     let span = createElement('span',null,null,null);
-
     let username = createElement('h2',"notfound text-center",null,`${message[key]}`)
-    //console.log("message",message,"key",key,"display",display)
+
     appendChild(parent =div,span,username)
     appendChild(parent =display,div);
     return display

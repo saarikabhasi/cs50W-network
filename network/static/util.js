@@ -1,4 +1,6 @@
 // header file used by other javascript file
+
+
 function formCrsf(){
     //csrf
     var crsf = document.createElement("input");
@@ -61,6 +63,7 @@ function createTextarea(rows,cols,id,name,content,form){
     if (form){element.form = form;}
     return element
 }
+
 function appendChild(parent,...args){
     //appendchild
     for (let i =0 ;i<args.length;i++){

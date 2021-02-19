@@ -2,27 +2,38 @@ from .models import *
 from django.db.models import F
 from datetime import datetime
 from django.utils import timezone
-# get - one element (unique obj)
-# filter - 0 to many element (queryset)
-# all - 0 to many
-def get_user_obj(username):
+
+"""
+This file contains functions that does the db queries. 
+Note: Entire db queries required for this project are yet to be added to this file.
+
+"""
+def get_user_obj_by_username(username):
     """
-    Returns user object
+    Returns user object for given username
     """
     
     userobj = User.objects.get(username = username)
     return userobj
 
+def get_user_obj_by_userId(id):
+    """
+    Returns user object for given user id
+    """
+    
+    userobj = User.objects.get(id = id)
+    return userobj
+
 def queryset_post_content(post_id):
     """
-    Returns post content
+    Returns post content for given post id
     """
     contents = queryset_post_object(post_id).values_list("contents",flat =True)
     return contents
 
 def queryset_post_object(post_id):
     """
-    Returns post queryset object
+    Returns post queryset object for given post id
 
     """
     postobj= Post.objects.filter(id = post_id)
@@ -31,7 +42,7 @@ def queryset_post_object(post_id):
 def update_post(post_id,contents):
     
     """
-    save the post after edit
+    save the post after edit,for given post id and contents
     """
     date_time =timezone.now()
     postobj = Post.objects.filter(id = post_id)
@@ -41,7 +52,7 @@ def update_post(post_id,contents):
 
 def delete_post(post_id):
     """
-    delete the post
+    delete the post, for given  post id
     """
     postobj = Post.objects.filter(id = post_id)
     if postobj:
@@ -49,19 +60,25 @@ def delete_post(post_id):
         return 1
     return 0
 
-def get_follower_ids(username):
-    userobj = get_user_obj(username)
+def get_follower_ids(id):
+    """
+    get all the followers for given user id
+    """
+    userobj = get_user_obj_by_userId(id)
     followers = Follow.objects.values('following').filter(following = userobj.id).values_list("follower_id",flat=True)
 
     return followers
 
 
-def get_user_networks(username):
+def get_user_networks(id):
     """
-    1. return user follow and following list 
+    1. return user follow and following list for given user id
     """
-    userobj = get_user_obj(username)
+    #get user object
+    userobj = get_user_obj_by_userId(id)
+    #get users that given user is following
     current_following = Follow.objects.filter(follower = userobj.id)
+
     if len(current_following) == 0:
         #user follows no one.
         user_can_follow =  User.objects.all().exclude(username = userobj).values('id','username')
@@ -83,6 +100,7 @@ def get_user_networks(username):
         
         user_currently_follows = User.objects.filter(id__in = set(user_currently_follow_ids)).values('id','username')
         user_can_follow = User.objects.all().exclude(username = userobj).exclude(id__in = set(user_currently_follow_ids)).values('id','username')
+    
     return user_currently_follows,user_can_follow
 
     

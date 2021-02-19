@@ -1,14 +1,11 @@
 
-
-
-
 window.onpopstate = function(event) {
     //remember section when clicking previous 
     
-    showSection(event.state.section);
+    show_network_section(event.state.section);
 }
 
-function showSection(section){
+function show_network_section(section){
   
     //find section from server
     path =`section/${section}`
@@ -16,7 +13,7 @@ function showSection(section){
         path = `network/section/${section}`	
     }	
    
-    console.log("path:",path)
+
     fetch(path)
     .then(response => response.text())
     .then(text => {
@@ -34,6 +31,7 @@ function showSection(section){
             if (values!=0){
                 for( i in values){
                     val = values[i]
+                    
                     display = setup_network_groups(val,result,section,display);
                 }
             }
@@ -53,13 +51,13 @@ function showSection(section){
 
     
 window.onload = function(){
-    
+console.log('onload')
    window.history.pushState({section:initialsection},"",`${initialsection}`);
-    //storing previousection to localstorage so that i can use the information while refreshing the page!
+    //storing previousection to localstorage so that I can use the information while refreshing the page!
    localStorage.setItem("previoussection", initialsection);
     
     
-    showSection(initialsection);
+   show_network_section(initialsection);
     document.querySelectorAll('#button').forEach(button =>{
         if (button.dataset.section == initialsection){
             var current = document.getElementsByClassName("active");    
@@ -74,7 +72,7 @@ window.onload = function(){
 }
 
 document.addEventListener('DOMContentLoaded',function(){ 
-    
+    console.log('DOMContentLoaded')
 // Add section functionality
     document.querySelectorAll('#button').forEach(button =>{
         button.onclick = function(){
@@ -82,7 +80,7 @@ document.addEventListener('DOMContentLoaded',function(){
             window.history.pushState({section:section},"",`${section}`);
             localStorage.setItem("previoussection", section);
   
-            showSection(section);
+            show_network_section(section);
             
             var current = document.getElementsByClassName("active");    
             

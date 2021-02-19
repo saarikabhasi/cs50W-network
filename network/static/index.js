@@ -1,6 +1,6 @@
 /* 
 1. Like feature
-2. 2. edit and save post
+2. edit and save post
  */
 
 
@@ -62,13 +62,12 @@ function likefeature(){
     });
 }
 
-var likebutton = 0,editbutton = 0
 
 
 
 
 function edit_post(postId,post_username){
-    // edit post
+    // edit post 
     id = `eachpost_${postId}`
     path =""
     display = createElement('div',null,null,null);
@@ -150,7 +149,7 @@ function save_post(postId){
             
 }
 function delete_post(post_id){
-    
+    //delete post
     id = `eachpost_${post_id}`
     postDiv = document.getElementById(id)
     fetch(`deletepost/${post_id}`)
